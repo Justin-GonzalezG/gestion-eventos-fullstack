@@ -38,7 +38,6 @@ public class UsuarioController {
         }
     }
 
-    //Agregar al Github
     @GetMapping("/filtrar/{rol}")
     public List<Usuario> filtrarPorRol(@PathVariable String rol) {
         return usuarioService.filtrarPorRol(rol);
