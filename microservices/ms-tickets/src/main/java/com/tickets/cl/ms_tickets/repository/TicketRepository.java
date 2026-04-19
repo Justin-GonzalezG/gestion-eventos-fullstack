@@ -12,6 +12,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByTipo(String tipo);
 
-    @Query("SELECT t from Ticket t where t.precio <= :precioMax")
-    List<Ticket>buscarPorPrecioMaximo(@Param("precioMax") Integer precioMax);
+    @Query("SELECT t from Ticket t where t.precio <= :tipo and t.precio <= :precioMax")
+    List<Ticket> buscarPorTipoYPrecio(@Param("tipo") String tipo, @Param("precioMax") Integer precioMax);
 }
