@@ -30,11 +30,7 @@ public class TicketService {
         ticketRepository.deleteById(id);
     }
 
-    public List<Ticket> buscarPorTipo(String tipo) {
-        return ticketRepository.findByTipo(tipo);
-    }
-
-    public List<Ticket> buscarPorPrecio(Integer precioMax) {
-        return ticketRepository.buscarPorPrecioMaximo(precioMax);
+    public List<Ticket> filtrarPorTipoYPrecio(String tipo, Integer precioMax) {
+        return ticketRepository.buscarPorTipoYPrecio(tipo, precioMax);
     }
 }
