@@ -26,7 +26,12 @@ public class TicketController {
     @PostMapping
     public String crear(@RequestBody Ticket ticket) {
         ticketService.guardar(ticket);
-        return "El ticket de tipo '" + ticket.getTipo() + "' se guardo con excito en la Base de Datos.";
+        return "El ticket de tipo '" + ticket.getTipo() + "' se guardo con excito .";
+    }
+
+    @GetMapping("/filtrar/{tipo}/{precioMax}")
+    public List<Ticket> filtrar(@PathVariable String tipo, @PathVariable Integer precioMax) {
+        return ticketService.filtrarPorTipoYPrecio(tipo, precioMax);
     }
 
     @GetMapping("/{id}")
@@ -42,7 +47,7 @@ public class TicketController {
             ticketService.eliminar(id);
             return "El ticket con ID " + id + " ha sido eliminado con exito.";
         } else {
-            return "No se pudo eliminar: El ticket con ID " + id + " no existe en la base de datos.";
+            return "No se pudo eliminar, debido que el ticket no existe.";
         }
     }
 }
