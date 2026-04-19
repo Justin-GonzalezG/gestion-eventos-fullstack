@@ -29,4 +29,12 @@ public class TicketService {
     public void eliminar(Integer id){
         ticketRepository.deleteById(id);
     }
+
+    public List<Ticket> buscarPorTipo(String tipo) {
+        return ticketRepository.findByTipo(tipo);
+    }
+
+    public List<Ticket> buscarPorPrecio(Integer precioMax) {
+        return ticketRepository.buscarPorPrecioMaximo(precioMax);
+    }
 }
