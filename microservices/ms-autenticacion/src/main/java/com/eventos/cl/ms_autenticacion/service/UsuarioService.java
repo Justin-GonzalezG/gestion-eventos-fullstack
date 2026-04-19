@@ -14,12 +14,10 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Esta es la Funcion que cree para Registrar el Usuriario.
     public Usuario registrarUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    // Listamos los Usuarios.
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
@@ -32,10 +30,13 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    // Función para validar el ingreso (Login)
     public Usuario login(String username, String password) {
         return usuarioRepository.findByUsername(username)
                 .filter(u -> u.getPassword().equals(password))
                 .orElse(null);
+    }
+    
+    public List<Usuario> filtrarPorRol(String rol) {
+        return usuarioRepository.findByRolDeUsuario(rol);
     }
 }
