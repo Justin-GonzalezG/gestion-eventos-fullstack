@@ -35,8 +35,24 @@ public class UsuarioService {
                 .filter(u -> u.getPassword().equals(password))
                 .orElse(null);
     }
-    
+
     public List<Usuario> filtrarPorRol(String rol) {
         return usuarioRepository.findByRolDeUsuario(rol);
+    }
+
+    public Usuario actualizar(Long id, Usuario usuarioActualizado) {
+        Usuario usuarioExistente = usuarioRepository.findById(id).orElse(null);
+
+        if (usuarioExistente != null) {
+            usuarioExistente.setNombre(usuarioActualizado.getNombre());
+            usuarioExistente.setApellido(usuarioActualizado.getApellido());
+            usuarioExistente.setRol(usuarioActualizado.getRol());
+            usuarioExistente.setPassword(usuarioActualizado.getPassword());
+            usuarioExistente.setUsername(usuarioActualizado.getUsername());
+
+            return usuarioRepository.save(usuarioExistente);
+        }
+
+        return null;
     }
 }
