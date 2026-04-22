@@ -1,3 +1,4 @@
+
 // http://localhost:8081/api/auth <-- Este es el URL Benja para el Atuenticador de Usuarios
 
 package com.eventos.cl.ms_autenticacion.controller;
@@ -57,6 +58,17 @@ public class UsuarioController {
             return "Login correcto. ¡Hola de nuevo, " + usuario.getNombre() + "!";
         } else {
             return "Login fallido: Usuario o contraseña incorrectos.";
+        }
+    }
+
+    @PutMapping("/actualizar/{id}")
+    public String actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
+        Usuario actualizado = usuarioService.actualizar(id, usuario);
+
+        if (actualizado != null) {
+            return "¡Usuario " + actualizado.getNombre() + " actualizado con éxito!";
+        } else {
+            return "Error: No se pudo actualizar porque el ID " + id + " no existe.";
         }
     }
 }
