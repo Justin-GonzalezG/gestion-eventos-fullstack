@@ -33,4 +33,17 @@ public class TicketService {
     public List<Ticket> filtrarPorTipoYPrecio(String tipo, Integer precioMax) {
         return ticketRepository.buscarPorTipoYPrecio(tipo, precioMax);
     }
+
+    public Ticket actualizar(Integer id, Ticket ticketActualizado) {
+        Ticket ticketExistente = ticketRepository.findById(id).orElse(null);
+
+        if (ticketExistente != null) {
+            ticketExistente.setTipo(ticketActualizado.getTipo());
+            ticketExistente.setPrecio(ticketActualizado.getPrecio());
+            ticketExistente.setStock(ticketActualizado.getStock());
+
+            return ticketRepository.save(ticketExistente);
+        }
+        return null;
+    }
 }
