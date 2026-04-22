@@ -1,5 +1,3 @@
-// Agrego los comentarios de guia por si no se entiende que hacen alguna lineas de codigo.
-
 package com.eventos.cl.ms_autenticacion.model;
 
 import jakarta.persistence.*;
@@ -11,11 +9,12 @@ import lombok.Data;
 
 public class Usuario {
 
-    @Id // Con esto vamos a definir que sera la llave primaria de la Tabla.
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Con esto hacemos un ID Automatico.
-    private long id; // Y este es el Identificador unico
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @Column(unique = true, nullable = false) // Con esto el nombre si o si es Unico y Obligatorio.
+    // Se debe agregar en el postman para agregar a ala persona.
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -25,5 +24,5 @@ public class Usuario {
 
     private String apellido;
 
-    private String rol; // Esto nos definira el rol de la persona.
+    private String rol;
 }
