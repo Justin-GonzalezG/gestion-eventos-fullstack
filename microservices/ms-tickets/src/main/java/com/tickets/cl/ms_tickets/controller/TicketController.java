@@ -1,5 +1,5 @@
 
-// Recuerda compañero utilizar la URL para el Postman: http://localhost:8082/tickets
+// Recuerda utilizar la URL para el Postman: http://localhost:8084/tickets
 
 package com.tickets.cl.ms_tickets.controller;
 
@@ -48,6 +48,17 @@ public class TicketController {
             return "El ticket con ID " + id + " ha sido eliminado con exito.";
         } else {
             return "No se pudo eliminar, debido que el ticket no existe.";
+        }
+    }
+
+    @PutMapping("/actualizar/{id}")
+    public String actualizar(@PathVariable Integer id, @RequestBody Ticket ticket) {
+        Ticket actualizado = ticketService.actualizar(id, ticket);
+
+        if (actualizado != null) {
+            return "El ticket con ID " + id + " se actualizó con exito.";
+        } else {
+            return "No se encontró el ticket con ID " + id;
         }
     }
 }
