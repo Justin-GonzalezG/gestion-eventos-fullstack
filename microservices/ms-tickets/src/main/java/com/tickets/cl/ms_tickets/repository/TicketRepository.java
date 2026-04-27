@@ -4,14 +4,16 @@ import com.tickets.cl.ms_tickets.model.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import java.math.BigDecimal;
+import java.util.List;
 
-@Repository
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-public interface TicketRepository extends JpaRepository<Ticket, Integer> {
+    @Query("SELECT t FROM Ticket t WHERE t.categoria.id = :categoriaId")
+    List<Ticket> findByCategoriaId(@Param("categoriaId") Long categoriaId);
 
-    List<Ticket> findByTipo(String tipo);
+    @Query("SELECT t FROM Ticket t WHERE t.precio <= :precioMax ORDER BY t.precio DESC")
+    List<Ticket> findTicketsBajoPresupuesto(@Param("precioMax") BigDecimal precioMax);
 
-    @Query("SELECT ticket FROM Ticket ticket WHERE ticket.tipo = :tipo AND ticket.precio <= :precioMax")
-    List<Ticket> buscarPorTipoYPrecio(@Param("tipo") String tipo, @Param("precioMax") Integer precioMax);
+    List<Ticket> findByTipoContainingIgnoreCase(String tipo);
 }
