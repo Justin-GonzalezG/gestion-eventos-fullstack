@@ -4,15 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tickets") // <-- Dejo esto comentado compañero, ya que con
-                        // esto le ponemos el nombre de la tabla en XAMPP
+@Table(name = "tickets")
 public class Ticket {
 
     @Id
