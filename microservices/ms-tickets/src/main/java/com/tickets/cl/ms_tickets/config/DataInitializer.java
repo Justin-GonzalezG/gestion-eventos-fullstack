@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-
+@Slf4j
 public class DataInitializer implements CommandLineRunner {
 
     private final CategoriaRepository categoriaRepository;
@@ -24,21 +23,15 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
 
         if (categoriaRepository.count() > 0) {
-            log.info(">>> DataInitializer: La Base de Datos ya tiene categorias, se omite la carga inicial.");
+            log.info("La Base de Datos ya tiene categorias, se omite la carga inicial.");
             return;
         }
 
-        log.info(">>> DataInitializer: Base de Datos vacia detectada, insertando datos de prueba...");
+        log.info("Base de Datos vacia detectada, insertando datos de prueba...");
 
-        Categoria conciertos = categoriaRepository.save(
-                new Categoria(null, "Conciertos", "Eventos musicales en vivo")
-        );
-        Categoria deportes = categoriaRepository.save(
-                new Categoria(null, "Deportes", "Partidos y competencias deportivas")
-        );
-        Categoria teatro = categoriaRepository.save(
-                new Categoria(null,"Teatro", "Obras dramaticas y musicales")
-        );
+        Categoria conciertos = categoriaRepository.save(new Categoria(null, "Conciertos", "Eventos musicales en vivo"));
+        Categoria deportes = categoriaRepository.save(new Categoria(null, "Deportes", "Partidos y competencias deportivas"));
+        Categoria teatro = categoriaRepository.save(new Categoria(null,"Teatro", "Obras dramaticas y musicales"));
 
         ticketRepository.save(new Ticket(null, "VIP Lollapalooza", new BigDecimal("150000.00"), 50, conciertos));
         ticketRepository.save(new Ticket(null, "General Rock en Conce", new BigDecimal("35000.00"), 500, conciertos));
@@ -46,10 +39,6 @@ public class DataInitializer implements CommandLineRunner {
         ticketRepository.save(new Ticket(null, "Galería Maratón", new BigDecimal("12000.00"), 200, deportes));
         ticketRepository.save(new Ticket(null, "Primera Fila: Hamlet", new BigDecimal("45000.00"), 30, teatro));
 
-        log.info(">>> DataInitializer: {} categorías y {} tickets insertados correctamente.",
-                categoriaRepository.count(), ticketRepository.count());
-
+        log.info("Carga inicial completada con éxito.");
     }
-
-
 }
