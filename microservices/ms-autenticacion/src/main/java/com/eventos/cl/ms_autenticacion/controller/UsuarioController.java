@@ -3,72 +3,53 @@
 
 package com.eventos.cl.ms_autenticacion.controller;
 
-import com.eventos.cl.ms_autenticacion.model.Usuario;
+import com.eventos.cl.ms_autenticacion.dto.UsuarioRegistroDTO;
+import com.eventos.cl.ms_autenticacion.dto.UsuarioResponseDTO;
 import com.eventos.cl.ms_autenticacion.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @GetMapping("/listar")
-    public List<Usuario> listar() {
-        return usuarioService.obtenerTodos();
+    @GetMapping("/usuario")
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        List<UsuarioResponseDTO> usuarios = usuarioService.obtenerTodos();
+
+        if(usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(usuarios);
     }
 
     @PostMapping("/registro")
-    public String registrar(@RequestBody Usuario usuario) {
-        usuarioService.registrarUsuario(usuario);
-        return "¡Usuario " + usuario.getNombre() + " registrado con éxito!";
+    public ResponseEntity<UsuarioResponseDTO> registrar(@Valid @RequestBody UsuarioRegistroDTO dto) {
+        return ResponseEntity.status(201).body(usuarioService.guardar(dto));
     }
 
-    @GetMapping("/{id}")
-    public String buscar(@PathVariable Long id) {
-        Usuario usuario = usuarioService.obtenerPorId(id);
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<UsuarioResponseDTO> buscar(@PathVariable Long id) {
+        return usuarioService.obtenerPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-        if (usuario != null) {
-            return "Usuario encontrado: " + usuario.getNombre() + " " + usuario.getApellido() + " Rol: " + usuario.getRol();
-        } else {
-            return "No existe ningún usuario con el ID " + id;
+    @DeleteMapping("/usuario/{id}")
+    public ResponseEntity<Void> borrar(@PathVariable Long id) {
+
+        if (usuarioService.obtenerPorId(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-    }
 
-    @GetMapping("/filtrar/{rol}")
-    public List<Usuario> filtrarPorRol(@PathVariable String rol) {
-        return usuarioService.filtrarPorRol(rol);
-    }
-
-    @DeleteMapping("/{id}")
-    public String borrar(@PathVariable Long id) {
         usuarioService.eliminar(id);
-        return "El usuario con ID " + id + " ha sido eliminado con exito.";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestBody Usuario loginData) {
-        Usuario usuario = usuarioService.login(loginData.getUsername(), loginData.getPassword());
-
-        if (usuario != null) {
-            return "Login correcto. ¡Hola de nuevo, " + usuario.getNombre() + "!";
-        } else {
-            return "Login fallido: Usuario o contraseña incorrectos.";
-        }
-    }
-
-    @PutMapping("/actualizar/{id}")
-    public String actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario actualizado = usuarioService.actualizar(id, usuario);
-
-        if (actualizado != null) {
-            return "¡Usuario " + actualizado.getNombre() + " actualizado con éxito!";
-        } else {
-            return "Error: No se pudo actualizar porque el ID " + id + " no existe.";
-        }
+        return ResponseEntity.noContent().build();
     }
 }

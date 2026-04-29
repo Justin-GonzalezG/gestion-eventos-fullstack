@@ -1,58 +1,57 @@
 package com.eventos.cl.ms_autenticacion.service;
 
+import com.eventos.cl.ms_autenticacion.dto.UsuarioRegistroDTO;
+import com.eventos.cl.ms_autenticacion.dto.UsuarioResponseDTO;
 import com.eventos.cl.ms_autenticacion.model.Usuario;
 import com.eventos.cl.ms_autenticacion.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-
+@Transactional
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public Usuario registrarUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    private UsuarioResponseDTO mapearAResponse(Usuario usuario) {
+        return new UsuarioResponseDTO(
+                usuario.getId(),
+                usuario.getUsername(),
+                usuario.getEmail(),
+                usuario.getRol(),
+                usuario.isActivo()
+        );
     }
 
-    public List<Usuario> obtenerTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> obtenerTodos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(this::mapearAResponse)
+                .collect(Collectors.toList());
     }
 
-    public Usuario obtenerPorId(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
+    public Optional<UsuarioResponseDTO> obtenerPorId(Long id) {
+        return usuarioRepository.findById(id).map(this::mapearAResponse);
+    }
+
+    public UsuarioResponseDTO guardar(UsuarioRegistroDTO dto) {
+        Usuario usuario = new Usuario();
+        usuario.setUsername(dto.getUsername());
+        usuario.setPassword(dto.getPassword());
+        usuario.setEmail(dto.getCorreo());
+        usuario.setRol(dto.getRol());
+
+        Usuario guardado = usuarioRepository.save(usuario);
+        return mapearAResponse(guardado);
     }
 
     public void eliminar(Long id) {
         usuarioRepository.deleteById(id);
-    }
-
-    public Usuario login(String username, String password) {
-        return usuarioRepository.findByUsername(username)
-                .filter(u -> u.getPassword().equals(password))
-                .orElse(null);
-    }
-
-    public List<Usuario> filtrarPorRol(String rol) {
-        return usuarioRepository.findByRolDeUsuario(rol);
-    }
-
-    public Usuario actualizar(Long id, Usuario usuarioActualizado) {
-        Usuario usuarioExistente = usuarioRepository.findById(id).orElse(null);
-
-        if (usuarioExistente != null) {
-            usuarioExistente.setNombre(usuarioActualizado.getNombre());
-            usuarioExistente.setApellido(usuarioActualizado.getApellido());
-            usuarioExistente.setRol(usuarioActualizado.getRol());
-            usuarioExistente.setPassword(usuarioActualizado.getPassword());
-            usuarioExistente.setUsername(usuarioActualizado.getUsername());
-
-            return usuarioRepository.save(usuarioExistente);
-        }
-
-        return null;
     }
 }

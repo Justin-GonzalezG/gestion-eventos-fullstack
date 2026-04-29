@@ -1,28 +1,38 @@
 package com.eventos.cl.ms_autenticacion.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Table(name = "usuarios") // Recuerda que con esto definimos el nombre de la Tabla en MySQL.
 @Entity
-
+@Table(name = "auth_usuarios")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    // Se debe agregar en el postman para agregar a ala persona.
     @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    private String nombre;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol;
 
-    private String apellido;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    private String rol;
+    private boolean activo;
+
+    @PrePersist
+    protected void onCreate() {
+        this.activo = true;
+    }
 }
