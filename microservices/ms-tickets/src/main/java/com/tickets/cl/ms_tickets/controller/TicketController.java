@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TicketController {
 
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
     @GetMapping
     public ResponseEntity<List<TicketResponseDTO>> obtenerTodos() {
@@ -47,7 +47,7 @@ public class TicketController {
     }
 
     @DeleteMapping("{id}")
-    public  ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         if (ticketService.obtenerPorId(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
