@@ -1,0 +1,56 @@
+package cl.eventos.ms_ordenes.controller;
+
+import cl.eventos.ms_ordenes.dto.OrdenRequestDTO;
+import cl.eventos.ms_ordenes.model.Orden;
+import cl.eventos.ms_ordenes.service.OrdenService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/ordenes")
+@RequiredArgsConstructor
+public class OrdenController {
+
+    private final OrdenService ordenService;
+
+    // POST: Crear una nueva orden.
+    // http://localhost:8084/api/ordenes/crear
+    @PostMapping("/crear")
+    public String crear(@Valid @RequestBody OrdenRequestDTO ordenDTO) {
+        ordenService.crearOrden(ordenDTO);
+        return "La Orden ha sido guardada exitosamente.";
+    }
+
+    // GET: Listar todas las órdenes.
+    // http://localhost:8084/api/ordenes/lista
+    @GetMapping("/listar")
+    public List<Orden> listar() {
+        return ordenService.listarTodas();
+    }
+
+    // GET: Buscar órdenes por ID de Usuario.
+    // http://localhost:8084/api/ordenes/filtrar/1
+    @GetMapping("/filtrar/{usuarioId}")
+    public List<Orden> filtrar(@PathVariable Long usuarioId) {
+        return ordenService.obtenerPorUsuario(usuarioId);
+    }
+
+    // PUT: Actualizar el estado de una orden (PENDIENTE a PAGADO).
+    // http://localhost:8084/api/ordenes/actualizar/1?nuevoEstado=PAGADO
+    @PutMapping("/actualizar/{id}")
+    public String actualizar(@PathVariable Long id, @RequestParam String nuevoEstado) {
+        ordenService.actualizarEstado(id, nuevoEstado);
+        return "El estado de la orden ha sido actualizado exitosamente.";
+    }
+
+    // DELETE: Se elimina el registro principal de la tabla ordenes.
+    // http://localhost:8084/api/ordenes/eliminar/1
+    @DeleteMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        ordenService.eliminarOrden(id);
+        return "La orden #" + id + " ha sido eliminada correctamente.";
+    }
+}
