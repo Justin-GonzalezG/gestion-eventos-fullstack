@@ -16,6 +16,9 @@ public class DetalleOrden {
     private Long id;
 
     @Column(nullable = false)
+    private Long ticketId;
+
+    @Column(nullable = false)
     private Integer cantidad;
 
     @Column(nullable = false, precision = 10, scale = 2)

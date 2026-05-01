@@ -26,12 +26,14 @@ public class Orden {
 
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DetalleOrden> detalles;
 
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
-        if (this.estado == null) this.estado = "PENDIENTE";
+        if (this.estado == null) {
+            this.estado = "PENDIENTE";
+        }
     }
 }
