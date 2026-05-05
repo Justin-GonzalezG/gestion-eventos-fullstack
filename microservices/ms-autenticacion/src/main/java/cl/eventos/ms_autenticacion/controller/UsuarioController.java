@@ -22,6 +22,8 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    // GET: La lista de todos los Usuarios.
+    // http://localhost:8081/api/auth/usuario
     @GetMapping("/usuario")
     public ResponseEntity<Object> listar() {
         List<UsuarioResponseDTO> usuarios = usuarioService.obtenerTodos();
@@ -31,13 +33,17 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
-    @PostMapping("/registro")
+    // POST: Agregamos un Usuario.
+    // http://localhost:8081/api/auth/registrar
+    @PostMapping("/registrar")
     public ResponseEntity<Object> registrar(@Valid @RequestBody UsuarioRegistroDTO dto) {
         UsuarioResponseDTO guardado = usuarioService.guardar(dto);
 
         return ResponseEntity.status(201).body(guardado);
     }
 
+    // GET: Buscamos al Usuario por el ID del Usuario.
+    // http://localhost:8081/api/auth/usuario/{id}
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Object> buscar(@PathVariable Long id) {
         return usuarioService.obtenerPorId(id)
@@ -45,6 +51,8 @@ public class UsuarioController {
                 .orElse(ResponseEntity.status(404).body("Usuario con ID " + id + " no encontrado."));
     }
 
+    // GET: Filtramos la lista de los Usuarios por su Rol.
+    // http://localhost:8081/api/auth/usuario/rol/{rol}
     @GetMapping("/usuario/rol/{rol}")
     public ResponseEntity<Object> buscarPorRol(@PathVariable Rol rol) {
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarPorRol(rol);
@@ -57,6 +65,8 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarios);
     }
 
+    // DELETE: Borramos al Usuario por su ID.
+    // http://localhost:8081/api/auth/usuario/{id}
     @DeleteMapping("/usuario/{id}")
     public ResponseEntity<Object> borrar(@PathVariable Long id) {
         if (usuarioService.obtenerPorId(id).isEmpty()) {
