@@ -1,6 +1,3 @@
-
-// http://localhost:8081/api/auth <-- Este es el URL Benja para el Atuenticador de Usuarios
-
 package cl.eventos.ms_autenticacion.controller;
 
 import cl.eventos.ms_autenticacion.dto.UsuarioRegistroDTO;
@@ -23,8 +20,8 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     // GET: La lista de todos los Usuarios.
-    // http://localhost:8081/api/auth/usuario
-    @GetMapping("/usuario")
+    // http://localhost:8081/api/auth/usuarios
+    @GetMapping("/usuarios")
     public ResponseEntity<Object> listar() {
         List<UsuarioResponseDTO> usuarios = usuarioService.obtenerTodos();
         if (usuarios.isEmpty()) {
@@ -41,6 +38,17 @@ public class UsuarioController {
 
         return ResponseEntity.status(201).body(guardado);
     }
+
+    /* Para agregar un usuario
+
+    {
+        "username":
+        "password":
+        "email":
+        "rol": (Mayuscula)
+    }
+
+    */
 
     // GET: Buscamos al Usuario por el ID del Usuario.
     // http://localhost:8081/api/auth/usuario/{id}
