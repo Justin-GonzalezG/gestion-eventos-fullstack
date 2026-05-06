@@ -48,9 +48,7 @@ public class CheckInService {
 
     public Optional<CheckInResponseDTO> actualizar(Long id, CheckInRequestDTO dto) {
         return checkInRepository.findById(id).map(existente -> {
-            // Actualizamos el ticketId asociado a este registro
             existente.setTicketId(dto.getTicketId());
-            // Guardamos y mapeamos el resultado
             return mapToDTO(checkInRepository.save(existente));
         });
     }
