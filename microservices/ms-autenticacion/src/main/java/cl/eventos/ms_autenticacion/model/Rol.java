@@ -5,5 +5,6 @@ public enum Rol {
     CLIENTE,
     GUARDIA,
     COORDINADOR,
-    JEFE_OPERACION
+    JEFE_OPERACION,
+    ESTUDIANTE
 }
