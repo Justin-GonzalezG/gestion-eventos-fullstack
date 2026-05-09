@@ -1,6 +1,5 @@
 package cl.eventos.ms_autenticacion.controller;
 
-import cl.eventos.ms_autenticacion.config.SecurityConfig;
 import cl.eventos.ms_autenticacion.dto.LoginRequestDTO;
 import cl.eventos.ms_autenticacion.dto.UsuarioRegistroDTO;
 import cl.eventos.ms_autenticacion.dto.UsuarioResponseDTO;
@@ -34,20 +33,37 @@ public class UsuarioController {
 
     // POST: Endpoint para iniciar sesión y obtener el Token
     // URL: http://localhost:8081/api/auth/login
+
+    /*
+{
+    "username": "",
+    "password": ""
+}
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         log.info("Intento de login para: {}", loginRequest.getUsername());
 
         return usuarioService.buscarPorUsernameParaAuth(loginRequest.getUsername())
                 .map(user -> {
+
                     if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                         String token = jwtUtils.generarToken(user.getUsername());
-                        // Devolvemos el token en un mapa para que sea un objeto JSON válido
                         return ResponseEntity.ok(java.util.Map.of("token", token));
+
+                    } else {
+
+                        log.warn("Contraseña incorrecta para el usuario: {}", loginRequest.getUsername());
+                        return ResponseEntity.status(401).body("Credenciales inválidas.");
+
                     }
-                    return ResponseEntity.status(401).body("Credenciales inválidas.");
                 })
-                .orElse(ResponseEntity.status(401).body("Usuario no encontrado."));
+                .orElseGet(() -> {
+
+                    log.warn("Usuario no encontrado: {}", loginRequest.getUsername());
+                    return ResponseEntity.status(401).body("Usuario no encontrado.");
+
+                });
     }
 
     // GET: La lista de todos los Usuarios.
@@ -65,6 +81,17 @@ public class UsuarioController {
 
     // POST: Agregamos un Usuario.
     // http://localhost:8081/api/auth/registrar
+
+    /* Para agregar un usuario
+
+{
+    "username":"",
+    "password":"",
+    "email":"",
+    "rol": ""(Mayuscula)
+}
+
+*/
     @PostMapping("/registrar")
     public ResponseEntity<Object> registrar(@Valid @RequestBody UsuarioRegistroDTO dto) {
         log.info("Petición de registro recibida para el usuario: {}", dto.getUsername());
@@ -72,17 +99,6 @@ public class UsuarioController {
 
         return ResponseEntity.status(201).body(guardado);
     }
-
-    /* Para agregar un usuario
-
-    {
-        "username":
-        "password":
-        "email":
-        "rol": (Mayuscula)
-    }
-
-    */
 
     // GET: Buscamos al Usuario por el ID del Usuario.
     // http://localhost:8081/api/auth/usuario/{id}
@@ -161,4 +177,5 @@ public class UsuarioController {
 
         return ResponseEntity.ok(usuarios);
     }
+}
 }
