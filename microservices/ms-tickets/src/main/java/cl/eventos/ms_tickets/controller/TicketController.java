@@ -16,17 +16,20 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
+
 public class TicketController {
 
     private final TicketService ticketService;
 
-    // GET: http://localhost:8083/api/tickets
-    @GetMapping
+    // GET: Muestra la lista de todos los tickets.
+    // http://localhost:8083/api/tickets/listar
+    @GetMapping("/listar")
     public ResponseEntity<List<TicketResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(ticketService.obtenerTodos());
     }
 
-    // GET: http://localhost:8083/api/tickets/{id}
+    // GET: Buscamos el ticket por su ID..
+    // http://localhost:8083/api/tickets/{id}
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ticketService.obtenerPorId(id)
@@ -34,7 +37,17 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST: http://localhost:8083/api/tickets/crear
+    // POST: Creamos un nuevo Ticket.
+    // http://localhost:8083/api/tickets/crear
+
+    /*
+{
+    "tipo": "",
+    "precio": ,
+    "stock": "",
+    "categoriaId":
+}
+     */
     @PostMapping("/crear")
     public ResponseEntity<?> crear(@Valid @RequestBody TicketRequestDTO dto) {
         TicketResponseDTO nuevo = ticketService.guardar(dto);
@@ -44,7 +57,8 @@ public class TicketController {
         return ResponseEntity.status(201).body(respuesta);
     }
 
-    // PUT: http://localhost:8083/api/tickets/{id}
+    // PUT: Actualizamos el ticket.
+    // http://localhost:8083/api/tickets/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody TicketRequestDTO dto) {
         return ticketService.actualizar(id, dto)
@@ -57,33 +71,47 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE: http://localhost:8083/api/tickets/{id}
+    // DELETE: Borramos el Ticket usando la ID.
+    // http://localhost:8083/api/tickets/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         if (ticketService.obtenerPorId(id).isEmpty()) {
             return ResponseEntity.status(404).body(Map.of("error", "El ticket con ID " + id + " no existe."));
         }
         ticketService.eliminar(id);
+
         Map<String, String> respuesta = new LinkedHashMap<>();
         respuesta.put("mensaje", "Ticket eliminado con éxito de la base de datos.");
+
         return ResponseEntity.ok(respuesta);
     }
 
-    // GET: http://localhost:8083/api/tickets/buscar?tipo=TextoAqui
+    // GET: Filtramos el Ticket por Tipo de Evento.
+    // http://localhost:8083/api/tickets/buscar?tipo=TextoAqui
     @GetMapping("/buscar")
     public ResponseEntity<List<TicketResponseDTO>> buscarPorTipo(@RequestParam String tipo) {
         return ResponseEntity.ok(ticketService.buscarPorTipo(tipo));
     }
 
-    // GET: http://localhost:8083/api/tickets/categoria/{id}
+    // GET: Filtramos el Ticket por Categoria.
+    // http://localhost:8083/api/tickets/categoria/{id}
     @GetMapping("/categoria/{id}")
     public ResponseEntity<List<TicketResponseDTO>> buscarPorCategoria(@PathVariable Long id) {
         return ResponseEntity.ok(ticketService.buscarPorCategoria(id));
     }
 
-    // GET: http://localhost:8083/api/tickets/presupuesto?max=50000
+    // GET: Filtramos el Ticket por Presupuesto maximo.
+    // http://localhost:8083/api/tickets/presupuesto?max=
     @GetMapping("/presupuesto")
     public ResponseEntity<List<TicketResponseDTO>> bajoPresupuesto(@RequestParam BigDecimal max) {
         return ResponseEntity.ok(ticketService.buscarBajoPresupuesto(max));
+    }
+
+    // PUT: Actualiza solo el stock del Ticket (usado por ms-ordenes)
+    // http://localhost:8083/api/tickets/{id}/stock?nuevoStock=ValorAqui
+    @PutMapping("/{id}/stock")
+    public ResponseEntity<?> actualizarStock(@PathVariable Long id, @RequestParam Integer nuevoStock) {
+        ticketService.actualizarSoloStock(id, nuevoStock);
+        return ResponseEntity.ok(Map.of("mensaje", "Stock actualizado a: " + nuevoStock));
     }
 }
