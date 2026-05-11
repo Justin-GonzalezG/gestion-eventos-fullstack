@@ -93,4 +93,11 @@ public class TicketService {
         return ticketRepository.findTicketsBajoPresupuesto(precioMax)
                 .stream().map(this::mapToDTO).collect(Collectors.toList());
     }
+
+    public void actualizarSoloStock(Long id, Integer nuevoStock) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));
+        ticket.setStock(nuevoStock); // Asegúrate de que el campo se llame 'stock' en tu modelo
+        ticketRepository.save(ticket);
+    }
 }
