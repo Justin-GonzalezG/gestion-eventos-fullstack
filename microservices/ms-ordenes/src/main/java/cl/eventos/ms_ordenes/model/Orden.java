@@ -23,7 +23,7 @@ public class Orden {
 
     private BigDecimal granTotal;
 
-    private String estado; // PENDIENTE, PAGADO, CANCELADO
+    private String estado; // En teoria el estado debe ser PENDIENTE, PAGADO, CANCELADO
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

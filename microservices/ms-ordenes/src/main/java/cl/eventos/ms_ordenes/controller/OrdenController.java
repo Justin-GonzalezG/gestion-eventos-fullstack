@@ -18,6 +18,18 @@ public class OrdenController {
 
     // POST: Crear una nueva orden.
     // http://localhost:8084/api/ordenes/crear
+    /*
+    {
+        "usuarioId": ,
+        "detalles": [
+            {
+                "ticketId": ,
+                "cantidad": ,
+                "precioUnitario": 
+            }
+        ]
+    }
+    */
     @PostMapping("/crear")
     public String crear(@Valid @RequestBody OrdenRequestDTO ordenDTO) {
         ordenService.crearOrden(ordenDTO);
@@ -32,14 +44,14 @@ public class OrdenController {
     }
 
     // GET: Buscar órdenes por ID de Usuario.
-    // http://localhost:8084/api/ordenes/filtrar/1
+    // http://localhost:8084/api/ordenes/filtrar/{id}
     @GetMapping("/filtrar/{usuarioId}")
     public List<Orden> filtrar(@PathVariable Long usuarioId) {
         return ordenService.obtenerPorUsuario(usuarioId);
     }
 
     // PUT: Actualizar el estado de una orden (PENDIENTE a PAGADO).
-    // http://localhost:8084/api/ordenes/actualizar/1?nuevoEstado=PAGADO
+    // http://localhost:8084/api/ordenes/actualizar/1?nuevoEstado=
     @PutMapping("/actualizar/{id}")
     public String actualizar(@PathVariable Long id, @RequestParam String nuevoEstado) {
         ordenService.actualizarEstado(id, nuevoEstado);
@@ -47,7 +59,7 @@ public class OrdenController {
     }
 
     // DELETE: Se elimina el registro principal de la tabla ordenes.
-    // http://localhost:8084/api/ordenes/eliminar/1
+    // http://localhost:8084/api/ordenes/eliminar/{id}
     @DeleteMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
         ordenService.eliminarOrden(id);

@@ -1,7 +1,9 @@
 package cl.eventos.ms_ordenes.service;
 
+import cl.eventos.ms_ordenes.client.TicketClient;
 import cl.eventos.ms_ordenes.dto.DetalleRequestDTO;
 import cl.eventos.ms_ordenes.dto.OrdenRequestDTO;
+import cl.eventos.ms_ordenes.dto.TicketDTO;
 import cl.eventos.ms_ordenes.model.DetalleOrden;
 import cl.eventos.ms_ordenes.model.Orden;
 import cl.eventos.ms_ordenes.repository.OrdenRepository;
@@ -19,6 +21,7 @@ import java.util.List;
 public class OrdenService {
 
     private final OrdenRepository ordenRepository;
+    private final TicketClient ticketClient;
 
     @Transactional
     public Orden crearOrden(OrdenRequestDTO dto) {
@@ -32,18 +35,29 @@ public class OrdenService {
 
         for (DetalleRequestDTO detDto : dto.getDetalles()) {
 
+            TicketDTO ticketInfo = ticketClient.obtenerTicketPorId(detDto.getTicketId());
+
+            if (ticketInfo.getStock() < detDto.getCantidad()) {
+
+                throw new RuntimeException("Stock insuficiente para: " + ticketInfo.getTipo());
+            }
+
             DetalleOrden detalle = new DetalleOrden();
             detalle.setTicketId(detDto.getTicketId());
             detalle.setCantidad(detDto.getCantidad());
-            detalle.setPrecioUnitario(detDto.getPrecioUnitario());
+            detalle.setPrecioUnitario(ticketInfo.getPrecio());
 
-            BigDecimal subtotal = detDto.getPrecioUnitario().multiply(new BigDecimal(detDto.getCantidad()));
+            BigDecimal subtotal = ticketInfo.getPrecio().multiply(new BigDecimal(detDto.getCantidad()));
             detalle.setSubtotal(subtotal);
-
             detalle.setOrden(nuevaOrden);
 
             listaDetalles.add(detalle);
             totalGeneral = totalGeneral.add(subtotal);
+
+            int nuevoStock = ticketInfo.getStock() - detDto.getCantidad();
+            ticketInfo.setStock(nuevoStock);
+
+            ticketClient.actualizarStock(ticketInfo.getId(), nuevoStock);
         }
 
         nuevaOrden.setDetalles(listaDetalles);
@@ -60,6 +74,7 @@ public class OrdenService {
         Orden orden = ordenRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
         orden.setEstado(nuevoEstado);
+        
         return ordenRepository.save(orden);
     }
 
@@ -69,6 +84,7 @@ public class OrdenService {
 
     public void eliminarOrden(Long id) {
         if (!ordenRepository.existsById(id)) {
+
             throw new RuntimeException("La orden con ID " + id + " no existe.");
         }
         ordenRepository.deleteById(id);
