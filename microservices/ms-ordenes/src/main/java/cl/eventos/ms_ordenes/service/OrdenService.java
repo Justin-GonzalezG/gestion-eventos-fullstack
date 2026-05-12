@@ -89,4 +89,8 @@ public class OrdenService {
         }
         ordenRepository.deleteById(id);
     }
+
+    public boolean estaPagado(Long ticketId) {
+        return ordenRepository.existsByEstadoAndDetalles_TicketId("PAGADA", ticketId);
+    }
 }
