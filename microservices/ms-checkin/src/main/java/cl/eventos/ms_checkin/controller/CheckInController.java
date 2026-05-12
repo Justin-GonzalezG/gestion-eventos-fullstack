@@ -22,7 +22,7 @@ public class CheckInController {
     private final CheckInService checkInService;
 
     // POST: Registrar un nuevo ingreso.
-    // http://localhost:8089/api/checkin/registrar
+    // http://localhost:8090/api/checkin/registrar
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@Valid @RequestBody CheckInRequestDTO dto) {
         System.out.println("Iniciando registro de ingreso para Ticket ID: " + dto.getTicketId());
@@ -38,7 +38,7 @@ public class CheckInController {
     }
 
     // GET: Listar todos los ingresos.
-    // http://localhost:8089/api/checkin/listar
+    // http://localhost:8090/api/checkin/listar
     @GetMapping("/listar")
     public ResponseEntity<List<CheckInResponseDTO>> listar() {
         System.out.println("Obteniendo lista completa de asistentes");
@@ -46,7 +46,7 @@ public class CheckInController {
     }
 
     // GET: Buscar ingreso por Ticket ID.
-    // http://localhost:8089/api/checkin/ticket/{ticketId}
+    // http://localhost:8090/api/checkin/ticket/{ticketId}
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<CheckInResponseDTO> buscarPorTicket(@PathVariable Long ticketId) {
         System.out.println("Verificando estado de ingreso del ticket: " + ticketId);
@@ -56,7 +56,7 @@ public class CheckInController {
     }
 
     // PUT: Actualizar un registro de ingreso por ID.
-    // http://localhost:8089/api/checkin/actualizar/{id}
+    // http://localhost:8090/api/checkin/actualizar/{id}
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> actualizar(
             @PathVariable Long id,
@@ -78,7 +78,7 @@ public class CheckInController {
     }
 
     // DELETE: Eliminar un registro de ingreso.
-    // http://localhost:8089/api/checkin/eliminar/{id}
+    // http://localhost:8090/api/checkin/eliminar/{id}
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         System.out.println("Eliminando registro de ingreso ID: " + id);
@@ -97,7 +97,7 @@ public class CheckInController {
     }
 
     // GET: Obtener total de asistentes (Cuantos Ticket chequeados).
-    // http://localhost:8089/api/checkin/aforo
+    // http://localhost:8090/api/checkin/aforo
     @GetMapping("/aforo")
     public ResponseEntity<Long> obtenerAforo() {
         Long total = checkInService.obtenerTotalAsistentes();

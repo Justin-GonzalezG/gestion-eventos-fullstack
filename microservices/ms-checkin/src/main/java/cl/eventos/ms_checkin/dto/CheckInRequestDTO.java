@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class CheckInRequestDTO {
 
     @NotNull(message = "El ID del ticket es obligatorio para validar el acceso.")

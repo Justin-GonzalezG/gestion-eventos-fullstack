@@ -1,5 +1,7 @@
 package cl.eventos.ms_checkin.service;
 
+import cl.eventos.ms_checkin.client.OrdenClient;
+import cl.eventos.ms_checkin.client.TicketClient;
 import cl.eventos.ms_checkin.dto.CheckInRequestDTO;
 import cl.eventos.ms_checkin.dto.CheckInResponseDTO;
 import cl.eventos.ms_checkin.model.CheckIn;
@@ -17,9 +19,12 @@ import java.util.stream.Collectors;
 public class CheckInService {
 
     private final CheckInRepository checkInRepository;
+    private final TicketClient ticketClient;
+    private final OrdenClient ordenClient;
 
     private CheckInResponseDTO mapToDTO(CheckIn checkIn) {
         return new CheckInResponseDTO(
+
                 checkIn.getId(),
                 checkIn.getTicketId(),
                 checkIn.getFechaIngreso()
@@ -28,21 +33,27 @@ public class CheckInService {
 
     public List<CheckInResponseDTO> obtenerTodos() {
         return checkInRepository.findAll()
+
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     public CheckInResponseDTO registrarIngreso(CheckInRequestDTO dto) {
+        ticketClient.validarTicket(dto.getTicketId());
 
         if (checkInRepository.existsByTicketId(dto.getTicketId())) {
-            throw new RuntimeException(
-                    "EL TICKET " + dto.getTicketId() + " YA SE ENCUENTRA REGISTRADO.");
+
+            throw new RuntimeException("ACCESO DENEGADO: El ticket ya fue utilizado.");
+        }
+
+        if (!ordenClient.verificarPagoTicket(dto.getTicketId())) {
+            
+            throw new RuntimeException("ACCESO DENEGADO: El ticket no figura como PAGADO.");
         }
 
         CheckIn checkIn = new CheckIn();
         checkIn.setTicketId(dto.getTicketId());
-
         return mapToDTO(checkInRepository.save(checkIn));
     }
 

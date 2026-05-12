@@ -15,5 +15,5 @@ public class CheckInResponseDTO {
     private Long id;
     private Long ticketId;
     private LocalDateTime fechaIngreso;
-    
+
 }
