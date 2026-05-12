@@ -22,14 +22,14 @@ public class TicketController {
     private final TicketService ticketService;
 
     // GET: Muestra la lista de todos los tickets.
-    // http://localhost:8083/api/tickets/listar
+    // http://localhost:8084/api/tickets/listar
     @GetMapping("/listar")
     public ResponseEntity<List<TicketResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(ticketService.obtenerTodos());
     }
 
     // GET: Buscamos el ticket por su ID..
-    // http://localhost:8083/api/tickets/{id}
+    // http://localhost:8084/api/tickets/{id}
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ticketService.obtenerPorId(id)
@@ -38,7 +38,7 @@ public class TicketController {
     }
 
     // POST: Creamos un nuevo Ticket.
-    // http://localhost:8083/api/tickets/crear
+    // http://localhost:8084/api/tickets/crear
 
     /*
 {
@@ -58,7 +58,7 @@ public class TicketController {
     }
 
     // PUT: Actualizamos el ticket.
-    // http://localhost:8083/api/tickets/{id}
+    // http://localhost:8084/api/tickets/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody TicketRequestDTO dto) {
         return ticketService.actualizar(id, dto)
@@ -72,7 +72,7 @@ public class TicketController {
     }
 
     // DELETE: Borramos el Ticket usando la ID.
-    // http://localhost:8083/api/tickets/{id}
+    // http://localhost:8084/api/tickets/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         if (ticketService.obtenerPorId(id).isEmpty()) {
@@ -87,28 +87,28 @@ public class TicketController {
     }
 
     // GET: Filtramos el Ticket por Tipo de Evento.
-    // http://localhost:8083/api/tickets/buscar?tipo=TextoAqui
+    // http://localhost:8084/api/tickets/buscar?tipo=TextoAqui
     @GetMapping("/buscar")
     public ResponseEntity<List<TicketResponseDTO>> buscarPorTipo(@RequestParam String tipo) {
         return ResponseEntity.ok(ticketService.buscarPorTipo(tipo));
     }
 
     // GET: Filtramos el Ticket por Categoria.
-    // http://localhost:8083/api/tickets/categoria/{id}
+    // http://localhost:8084/api/tickets/categoria/{id}
     @GetMapping("/categoria/{id}")
     public ResponseEntity<List<TicketResponseDTO>> buscarPorCategoria(@PathVariable Long id) {
         return ResponseEntity.ok(ticketService.buscarPorCategoria(id));
     }
 
     // GET: Filtramos el Ticket por Presupuesto maximo.
-    // http://localhost:8083/api/tickets/presupuesto?max=
+    // http://localhost:8084/api/tickets/presupuesto?max=
     @GetMapping("/presupuesto")
     public ResponseEntity<List<TicketResponseDTO>> bajoPresupuesto(@RequestParam BigDecimal max) {
         return ResponseEntity.ok(ticketService.buscarBajoPresupuesto(max));
     }
 
     // PUT: Actualiza solo el stock del Ticket (usado por ms-ordenes)
-    // http://localhost:8083/api/tickets/{id}/stock?nuevoStock=ValorAqui
+    // http://localhost:8084/api/tickets/{id}/stock?nuevoStock=ValorAqui
     @PutMapping("/{id}/stock")
     public ResponseEntity<?> actualizarStock(@PathVariable Long id, @RequestParam Integer nuevoStock) {
         ticketService.actualizarSoloStock(id, nuevoStock);
