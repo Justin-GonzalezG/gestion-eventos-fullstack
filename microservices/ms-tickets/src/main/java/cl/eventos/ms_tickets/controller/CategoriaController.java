@@ -14,17 +14,20 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor
+
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    // GET: http://localhost:8083/api/categorias
-    @GetMapping
+    // GET: Obtenemos la lista de todas las categorías disponibles.
+    // http://localhost:8084/api/categorias/listar
+    @GetMapping("/listar")
     public ResponseEntity<List<Categoria>> obtenerTodas() {
         return ResponseEntity.ok(categoriaService.obtenerTodas());
     }
 
-    // GET: http://localhost:8083/api/categorias/{id}
+    // GET: Buscamos una categoría específica por su ID.
+    // http://localhost:8084/api/categorias/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Categoria> obtenerPorId(@PathVariable Long id) {
         return categoriaService.obtenerPorId(id)
@@ -32,8 +35,16 @@ public class CategoriaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST: http://localhost:8083/api/categorias
-    @PostMapping
+    // POST: Creamos una Categoria nueva.
+    // http://localhost:8084/api/categorias/crear
+
+    /*
+{
+    "nombre": "",
+    "descripcion" "":
+}
+     */
+    @PostMapping("/crear")
     public ResponseEntity<?> crear(@Valid @RequestBody Categoria categoria) {
         Categoria nueva = categoriaService.guardar(categoria);
         Map<String, Object> respuesta = new LinkedHashMap<>();
@@ -42,22 +53,34 @@ public class CategoriaController {
         return ResponseEntity.status(201).body(respuesta);
     }
 
-    // PUT: http://localhost:8083/api/categorias/{id}
+    // PUT: Actualizamos la Categoria por su ID.
+    // http://localhost:8084/api/categorias/{id}
+
+    /*
+    {
+        "nombre":,
+        "descripcion":
+    }
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Categoria datos) {
         return categoriaService.obtenerPorId(id)
                 .map(existente -> {
+
                     datos.setId(id);
                     Categoria actualizada = categoriaService.guardar(datos);
                     Map<String, Object> respuesta = new LinkedHashMap<>();
                     respuesta.put("mensaje", "Categoría actualizada correctamente");
                     respuesta.put("categoria", actualizada);
+
                     return ResponseEntity.ok(respuesta);
+
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE: http://localhost:8083/api/categorias/{id}
+    // DELETE: Eliminamos la Categoria permanentemente por su ID.
+    // http://localhost:8084/api/categorias/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         if (categoriaService.obtenerPorId(id).isEmpty()) {
