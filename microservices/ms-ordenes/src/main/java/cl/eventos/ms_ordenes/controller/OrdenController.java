@@ -66,6 +66,7 @@ public class OrdenController {
         return "La orden #" + id + " ha sido eliminada correctamente.";
     }
 
+    // Get: Validamos si el Ticket esta pagado o no.
     // http://localhost:8085/api/ordenes/validar-pago/{ticketId}
     @GetMapping("/validar-pago/{ticketId}")
     public boolean verificarPagoTicket(@PathVariable Long ticketId) {
