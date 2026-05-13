@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> manejarRuntime(RuntimeException ex) {
-        
+
         Map<String, Object> mapa = new LinkedHashMap<>();
         mapa.put("timestamp", LocalDateTime.now());
         mapa.put("error", "Error en el proceso de pago");
@@ -23,6 +23,4 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(mapa, HttpStatus.NOT_FOUND);
     }
-
-
 }

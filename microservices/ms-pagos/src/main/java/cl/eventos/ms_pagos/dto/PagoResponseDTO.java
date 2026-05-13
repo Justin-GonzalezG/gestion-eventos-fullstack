@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 
 public class PagoResponseDTO {
+
     private Long id;
     private Long ordenId;
     private BigDecimal monto;

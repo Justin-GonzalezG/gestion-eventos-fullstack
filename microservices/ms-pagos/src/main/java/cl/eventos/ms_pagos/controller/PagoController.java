@@ -22,8 +22,16 @@ public class PagoController {
 
     // POST: Crear el pago.
     // http://localhost:8086/api/pagos/crear
+    /*
+{
+    "ordenId": ,
+    "monto": ,
+    "metodoPago": ""
+}
+     */
     @PostMapping("/crear")
     public ResponseEntity<?> crear(@RequestBody PagoRequestDTO pagoRequestDTO) {
+
         System.out.println("Iniciando proceso de creación de pago...");
         PagoResponseDTO response = pagoService.save(pagoRequestDTO);
 
@@ -49,21 +57,37 @@ public class PagoController {
     }
 
     // PUT: Actualizar el pago.
-    // http://localhost:8080/api/pagos/actualizar/{id}
+    // http://localhost:8086/api/pagos/actualizar/{id}
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<PagoResponseDTO> actualizar(@PathVariable Long id, @RequestBody PagoRequestDTO pagoRequestDTO) {
         System.out.println("Actualizando datos del pago con ID: " + id);
+
         PagoResponseDTO response = pagoService.update(id, pagoRequestDTO);
         System.out.println("Pago con ID: " + id + " actualizado correctamente.");
+
         return ResponseEntity.ok(response);
     }
 
-    // DELETE: Actualizar el pago.
+    // PATCH: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
+    // http://localhost:8086/api/pagos/actualizar-estado/1?nuevoEstado=
+    @PatchMapping("/actualizar-estado/{id}")
+    public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {
+        System.out.println("Cambiando estado del Pago ID: " + id + " a " + nuevoEstado);
+
+        PagoResponseDTO response = pagoService.actualizarEstado(id, nuevoEstado);
+
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("mensaje", "Estado de pago actualizado correctamente");
+        respuesta.put("pago", response);
+
+        return ResponseEntity.ok(respuesta);
+    }
+
+    // DELETE: Eliminar el historial del Pago.
     // http://localhost:8086/api/pagos/eliminar/{id}
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         System.out.println("Solicitud para eliminar pago con ID: " + id);
-
         pagoService.delete(id);
 
         Map<String, String> respuesta = new LinkedHashMap<>();
