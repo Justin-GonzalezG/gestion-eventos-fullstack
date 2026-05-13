@@ -1,13 +1,16 @@
 package cl.eventos.ms_pagos;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootTest
-class MsPagosApplicationTests {
+@SpringBootApplication
+@EnableFeignClients
 
-	@Test
-	void contextLoads() {
+public class MsPagosApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MsPagosApplication.class, args);
 	}
 
 }
