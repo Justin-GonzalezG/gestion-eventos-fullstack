@@ -75,7 +75,7 @@ public class PagoService {
                 System.out.println("Exito: Estado de la orden actualizado a PAGADA.");
 
             } catch (Exception e) {
-
+                
                 System.err.println("Error al notificar a ms-ordenes: " + e.getMessage());
             }
         }
