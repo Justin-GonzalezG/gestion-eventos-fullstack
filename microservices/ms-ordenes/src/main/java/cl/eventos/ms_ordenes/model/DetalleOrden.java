@@ -25,6 +25,6 @@ public class DetalleOrden {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orden_id")
-    @JsonBackReference // Indica que esta parte NO SE MUESTRA de vuelta al padre
+    @JsonBackReference
     private Orden orden;
 }

@@ -25,7 +25,6 @@ public class OrdenController {
             {
                 "ticketId": ,
                 "cantidad": ,
-                "precioUnitario": 
             }
         ]
     }
@@ -50,12 +49,18 @@ public class OrdenController {
         return ordenService.obtenerPorUsuario(usuarioId);
     }
 
-    // PUT: Actualizar el estado de una orden (PENDIENTE a PAGADO).
+    // PUT: Actualizar el estado de una orden (PENDIENTE a PAGADO o RECHAZADO).
     // http://localhost:8085/api/ordenes/actualizar/{id}?nuevoEstado=
     @PutMapping("/actualizar/{id}")
     public String actualizar(@PathVariable Long id, @RequestParam String nuevoEstado) {
         ordenService.actualizarEstado(id, nuevoEstado);
-        return "El estado de la orden ha sido actualizado exitosamente.";
+
+        if (nuevoEstado.equalsIgnoreCase("RECHAZADO"))
+        {
+            return "Su pago ha sido cambiado a RECHAZADO.";
+        }
+
+        return "El estado de la orden #" + id + " ahora es: " + nuevoEstado;
     }
 
     // DELETE: Se elimina el registro principal de la tabla ordenes.
@@ -66,7 +71,6 @@ public class OrdenController {
         return "La orden #" + id + " ha sido eliminada correctamente.";
     }
 
-    // Get: Validamos si el Ticket esta pagado o no.
     // http://localhost:8085/api/ordenes/validar-pago/{ticketId}
     @GetMapping("/validar-pago/{ticketId}")
     public boolean verificarPagoTicket(@PathVariable Long ticketId) {
