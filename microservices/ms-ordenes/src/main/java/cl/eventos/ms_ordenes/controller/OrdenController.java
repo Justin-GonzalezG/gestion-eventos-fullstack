@@ -51,7 +51,7 @@ public class OrdenController {
     }
 
     // PUT: Actualizar el estado de una orden (PENDIENTE a PAGADO).
-    // http://localhost:8085/api/ordenes/actualizar/1?nuevoEstado=
+    // http://localhost:8085/api/ordenes/actualizar/{id}?nuevoEstado=
     @PutMapping("/actualizar/{id}")
     public String actualizar(@PathVariable Long id, @RequestParam String nuevoEstado) {
         ordenService.actualizarEstado(id, nuevoEstado);
