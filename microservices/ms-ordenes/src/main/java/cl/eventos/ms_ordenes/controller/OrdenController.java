@@ -24,7 +24,7 @@ public class OrdenController {
         "detalles": [
             {
                 "ticketId": ,
-                "cantidad": ,
+                "cantidad":
             }
         ]
     }
@@ -36,14 +36,21 @@ public class OrdenController {
     }
 
     // GET: Listar todas las órdenes.
-    // http://localhost:8085/api/ordenes/lista
+    // http://localhost:8085/api/ordenes/listar
     @GetMapping("/listar")
     public List<Orden> listar() {
         return ordenService.listarTodas();
     }
 
+    // GET: Buscar por ID.
+    // http://localhost:8085/api/ordenes/{id}
+    @GetMapping("/{id}")
+    public Orden obtenerPorId(@PathVariable Long id) {
+        return ordenService.obtenerPorId(id);
+    }
+
     // GET: Buscar órdenes por ID de Usuario.
-    // http://localhost:8085/api/ordenes/filtrar/{id}
+    // http://localhost:8085/api/ordenes/filtrar/{usuarioId}
     @GetMapping("/filtrar/{usuarioId}")
     public List<Orden> filtrar(@PathVariable Long usuarioId) {
         return ordenService.obtenerPorUsuario(usuarioId);
@@ -71,6 +78,7 @@ public class OrdenController {
         return "La orden #" + id + " ha sido eliminada correctamente.";
     }
 
+    // GET: Con esto validamos el Pago.
     // http://localhost:8085/api/ordenes/validar-pago/{ticketId}
     @GetMapping("/validar-pago/{ticketId}")
     public boolean verificarPagoTicket(@PathVariable Long ticketId) {
