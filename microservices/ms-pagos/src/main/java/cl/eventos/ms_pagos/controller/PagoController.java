@@ -30,10 +30,12 @@ public class PagoController {
 }
      */
     @PostMapping("/crear")
-    public ResponseEntity<?> crear(@RequestBody PagoRequestDTO pagoRequestDTO) {
+    public ResponseEntity<?> crear(@RequestBody PagoRequestDTO pagoRequestDTO, @RequestHeader("Authorization") String authHeader) {
 
         System.out.println("Iniciando proceso de creación de pago...");
-        PagoResponseDTO response = pagoService.save(pagoRequestDTO);
+        String token = authHeader.replace("Bearer ", "");
+        
+        PagoResponseDTO response = pagoService.save(pagoRequestDTO, token);
 
         Map<String, Object> respuesta = new LinkedHashMap<>();
         respuesta.put("mensaje", "Pago procesado exitosamente");
@@ -68,7 +70,7 @@ public class PagoController {
         return ResponseEntity.ok(response);
     }
 
-    // PATCH: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
+    // PUT: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
     // http://localhost:8086/api/pagos/actualizar-estado/1?nuevoEstado=
     @PatchMapping("/actualizar-estado/{id}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {

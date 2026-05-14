@@ -1,5 +1,6 @@
 package cl.eventos.ms_pagos.service;
 
+import cl.eventos.ms_pagos.client.AuthClient;
 import cl.eventos.ms_pagos.client.OrdenClient;
 import cl.eventos.ms_pagos.dto.OrdenDTO;
 import cl.eventos.ms_pagos.dto.PagoRequestDTO;
@@ -10,8 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +21,20 @@ public class PagoService {
 
     private final PagoRepository pagoRepository;
     private final OrdenClient ordenClient;
+    private final AuthClient authClient;
 
     @Transactional
-    public PagoResponseDTO save(PagoRequestDTO dto) {
+    public PagoResponseDTO save(PagoRequestDTO dto, String token) {
+
+        Map<String, Object> authRespuesta = authClient.validarToken(token);
+
+        if (authRespuesta == null || !(boolean) authRespuesta.get("valido")) {
+            throw new RuntimeException("ERROR: Acceso denegado. Token inválido o expirado.");
+        }
+
         OrdenDTO ordenReal = ordenClient.buscarPorId(dto.getOrdenId());
 
         if (dto.getMonto() == null || dto.getMonto().compareTo(ordenReal.getGranTotal()) < 0) {
-
             throw new RuntimeException("ERROR: Monto insuficiente. La orden requiere: $" + ordenReal.getGranTotal());
         }
 
@@ -35,9 +43,10 @@ public class PagoService {
         pago.setMonto(dto.getMonto());
         pago.setMetodoPago(dto.getMetodoPago());
         pago.setEstadoPago("APROBADO");
-        ordenClient.actualizar(dto.getOrdenId(), "PAGADA");
-        Pago nuevoPago = pagoRepository.save(pago);
 
+        ordenClient.actualizar(dto.getOrdenId(), "PAGADA");
+
+        Pago nuevoPago = pagoRepository.save(pago);
         return mapearAResponse(nuevoPago);
     }
 
@@ -59,12 +68,14 @@ public class PagoService {
 
     private PagoResponseDTO mapearAResponse(Pago pago) {
         PagoResponseDTO dto = new PagoResponseDTO();
+
         dto.setId(pago.getId());
         dto.setOrdenId(pago.getOrdenId());
         dto.setMonto(pago.getMonto());
         dto.setMetodoPago(pago.getMetodoPago());
         dto.setEstadoPago(pago.getEstadoPago());
         dto.setFechaPago(pago.getFechaPago());
+
         return dto;
     }
 
