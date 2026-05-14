@@ -30,8 +30,11 @@ public class OrdenController {
     }
     */
     @PostMapping("/crear")
-    public String crear(@Valid @RequestBody OrdenRequestDTO ordenDTO) {
-        ordenService.crearOrden(ordenDTO);
+    public String crear(@Valid @RequestBody OrdenRequestDTO ordenDTO, @RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.replace("Bearer ", "");
+
+        ordenService.crearOrden(ordenDTO, token);
         return "La Orden ha sido guardada exitosamente.";
     }
 

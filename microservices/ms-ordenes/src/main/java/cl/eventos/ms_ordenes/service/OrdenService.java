@@ -1,5 +1,6 @@
 package cl.eventos.ms_ordenes.service;
 
+import cl.eventos.ms_ordenes.client.AuthClient;
 import cl.eventos.ms_ordenes.client.PagoClient;
 import cl.eventos.ms_ordenes.client.TicketClient;
 import cl.eventos.ms_ordenes.dto.DetalleRequestDTO;
@@ -15,18 +16,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-
 public class OrdenService {
 
     private final OrdenRepository ordenRepository;
     private final TicketClient ticketClient;
     private final PagoClient pagoClient;
+    private final AuthClient authClient;
 
     @Transactional
-    public Orden crearOrden(OrdenRequestDTO dto) {
+    public Orden crearOrden(OrdenRequestDTO dto, String token) {
+
+        Map<String, Object> authRespuesta = authClient.validarToken(token);
+
+        if (authRespuesta == null || !(boolean) authRespuesta.get("valido")) {
+
+            throw new RuntimeException("ERROR: Acceso denegado. Debes estar autenticado para crear órdenes.");
+        }
 
         Orden orden = new Orden();
         orden.setUsuarioId(dto.getUsuarioId());
@@ -58,13 +67,10 @@ public class OrdenService {
         Orden guardada = ordenRepository.save(orden);
 
         try {
-
             System.out.println("Contactando a ms-pagos para la orden: " + guardada.getId());
             pagoClient.buscarPagoPorOrdenId(guardada.getId());
             System.out.println("Pago Aceptado");
-
         } catch (Exception e) {
-
             System.out.println("Pago RECHAZADO.");
         }
 
@@ -90,7 +96,6 @@ public class OrdenService {
 
     public void eliminarOrden(Long id) {
         if (!ordenRepository.existsById(id)) {
-
             throw new RuntimeException("La orden con ID " + id + " no existe.");
         }
         ordenRepository.deleteById(id);
