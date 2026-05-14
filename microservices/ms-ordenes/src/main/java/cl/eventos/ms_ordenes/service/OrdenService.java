@@ -99,4 +99,9 @@ public class OrdenService {
     public boolean estaPagado(Long ticketId) {
         return ordenRepository.existsByEstadoAndDetalles_TicketId("PAGADA", ticketId);
     }
+
+    public Orden obtenerPorId(Long id) {
+        return ordenRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
+    }
 }
