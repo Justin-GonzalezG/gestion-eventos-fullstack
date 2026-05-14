@@ -177,5 +177,21 @@ public class UsuarioController {
 
         return ResponseEntity.ok(usuarios);
     }
-}
+
+    // GET: Endpoint para que otros microservicios se validen.
+    // URL: http://localhost:8081/api/auth/validar?token=(Agregar Token)
+    @GetMapping("/validar")
+    public ResponseEntity<?> validarToken(@RequestParam String token) {
+
+        if (jwtUtils.validarToken(token)) {
+
+            String username = jwtUtils.getNombreUsuarioDesdeToken(token);
+            return ResponseEntity.ok(java.util.Map.of(
+                    "username", username,
+                    "valido", true,
+                    "mensaje", "Token verificado correctamente"
+            ));
+        }
+        return ResponseEntity.status(401).body("Error: El token no es válido.");
+    }
 }

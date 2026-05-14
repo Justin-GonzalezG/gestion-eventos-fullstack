@@ -1,11 +1,9 @@
 package cl.eventos.ms_autenticacion.config;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 
 @Component
 public class JwtUtils {
@@ -16,13 +14,35 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long expirationTime;
 
-    public String generarToken(String username) {
+    private java.security.Key getSigningKey() {
+        byte[] keyBytes = this.secretKey.getBytes();
+        return io.jsonwebtoken.security.Keys.hmacShaKeyFor(keyBytes);
+    }
 
+    public String generarToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+                .setIssuedAt(new java.util.Date())
+                .setExpiration(new java.util.Date(System.currentTimeMillis() + expirationTime))
+                .signWith(getSigningKey()) // Aquí ya no dará error
                 .compact();
+    }
+
+    public String getNombreUsuarioDesdeToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // Usa la llave para abrir el token
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validarToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
