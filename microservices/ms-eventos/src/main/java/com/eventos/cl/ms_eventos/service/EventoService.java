@@ -1,7 +1,9 @@
 package com.eventos.cl.ms_eventos.service;
 
+import com.eventos.cl.ms_eventos.client.TicketClient;
 import com.eventos.cl.ms_eventos.dto.EventoRequestDTO;
 import com.eventos.cl.ms_eventos.dto.EventoResponseDTO;
+import com.eventos.cl.ms_eventos.dto.TicketDTO;
 import com.eventos.cl.ms_eventos.model.Evento;
 import com.eventos.cl.ms_eventos.repository.EventoRepository;
 import jakarta.transaction.Transactional;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class EventoService {
 
     private final EventoRepository eventoRepository;
+    private final TicketClient  ticketClient;
 
     // Metodo interno para mapear la Entidad al DTO de Salida
     private EventoResponseDTO mapearAResponse(Evento evento) {
@@ -28,7 +31,8 @@ public class EventoService {
                 evento.getFechaHora(),
                 evento.getUbicacion(),
                 evento.getCapacidadMaxima(),
-                evento.getEstado()
+                evento.getEstado(),
+                null
         );
     }
 
@@ -40,7 +44,30 @@ public class EventoService {
     }
 
     public Optional<EventoResponseDTO> obtenerPorId(Long id) {
-        return eventoRepository.findById(id).map(this::mapearAResponse);
+        Optional<Evento> resultado = eventoRepository.findById(id);
+
+        if (!resultado.isPresent()) {
+            throw new RuntimeException("El evento con la ID " + id + " no existe");
+        }
+
+        EventoResponseDTO response = mapearAResponse(resultado.get());
+
+        try {
+
+            Long idCategoria = 1L;
+
+            System.out.println("Solicitando tickets filtrados para la categoría: " + idCategoria);
+            List<TicketDTO> ticketsFiltrados = ticketClient.buscarPorCategoria(idCategoria);
+            response.setTickets(ticketsFiltrados);
+            System.out.println("¡Tickets filtrados acoplados con éxito!");
+
+        } catch (Exception e) {
+
+        System.out.println("--- ERROR DE CONEXIÓN CON MS-TICKETS ---");
+        e.printStackTrace();
+    }
+
+        return Optional.of(response);
     }
 
     public EventoResponseDTO guardar(EventoRequestDTO dto) {

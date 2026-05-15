@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
+import java.util.List;
 
 // DTO de SALIDA
 @Data
@@ -18,4 +19,5 @@ public class EventoResponseDTO {
     private String ubicacion;
     private Integer capacidadMaxima;
     private String estado;
+    private List<TicketDTO> tickets;
 }
