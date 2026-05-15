@@ -29,13 +29,15 @@ public class PagoService {
         Map<String, Object> authRespuesta = authClient.validarToken(token);
 
         if (authRespuesta == null || !(boolean) authRespuesta.get("valido")) {
-            throw new RuntimeException("ERROR: Acceso denegado. Token inválido o expirado.");
+            throw new RuntimeException("Acceso denegado. Token inválido o expirado.");
         }
 
         OrdenDTO ordenReal = ordenClient.buscarPorId(dto.getOrdenId());
 
         if (dto.getMonto() == null || dto.getMonto().compareTo(ordenReal.getGranTotal()) < 0) {
-            throw new RuntimeException("ERROR: Monto insuficiente. La orden requiere: $" + ordenReal.getGranTotal());
+
+            ordenClient.actualizar(dto.getOrdenId(), "RECHAZADO");
+            throw new RuntimeException("Pago RECHAZADO. Motivo: Monto insuficiente. La orden requiere: $" + ordenReal.getGranTotal());
         }
 
         Pago pago = new Pago();
