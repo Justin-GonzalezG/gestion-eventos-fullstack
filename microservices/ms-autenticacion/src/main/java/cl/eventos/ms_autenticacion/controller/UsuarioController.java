@@ -31,7 +31,7 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // POST: Endpoint para iniciar sesión y obtener el Token
+    // POST: Endpoint para iniciar sesión y obtener el Token.(Se hace despúes de Agragar al Usuario)
     // URL: http://localhost:8081/api/auth/login
 
     /*
