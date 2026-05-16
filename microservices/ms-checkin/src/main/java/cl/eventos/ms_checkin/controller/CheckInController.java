@@ -23,6 +23,11 @@ public class CheckInController {
 
     // POST: Registrar un nuevo ingreso.
     // http://localhost:8090/api/checkin/registrar
+    /*
+{
+    "ticketId": 
+}
+     */
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@Valid @RequestBody CheckInRequestDTO dto) {
         System.out.println("Iniciando registro de ingreso para Ticket ID: " + dto.getTicketId());
