@@ -3,11 +3,14 @@ package cl.eventos.ms_ordenes.service;
 import cl.eventos.ms_ordenes.client.AuthClient;
 import cl.eventos.ms_ordenes.client.PagoClient;
 import cl.eventos.ms_ordenes.client.TicketClient;
+import cl.eventos.ms_ordenes.client.UsuarioClient;
 import cl.eventos.ms_ordenes.dto.DetalleRequestDTO;
 import cl.eventos.ms_ordenes.dto.OrdenRequestDTO;
 import cl.eventos.ms_ordenes.dto.TicketDTO;
+import cl.eventos.ms_ordenes.dto.UsuarioDTO;
 import cl.eventos.ms_ordenes.model.DetalleOrden;
 import cl.eventos.ms_ordenes.model.Orden;
+import cl.eventos.ms_ordenes.repository.DetalleOrdenRepository;
 import cl.eventos.ms_ordenes.repository.OrdenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class OrdenService {
     private final TicketClient ticketClient;
     private final PagoClient pagoClient;
     private final AuthClient authClient;
+    private final UsuarioClient usuarioClient;
 
     @Transactional
     public Orden crearOrden(OrdenRequestDTO dto, String token) {
@@ -34,7 +38,7 @@ public class OrdenService {
 
         if (authRespuesta == null || !(boolean) authRespuesta.get("valido")) {
 
-            throw new RuntimeException("ERROR: Acceso denegado. Debes estar autenticado para crear órdenes.");
+            throw new RuntimeException("Error: Acceso denegado. Debes estar autenticado para crear órdenes.");
         }
 
         Orden orden = new Orden();
@@ -67,11 +71,25 @@ public class OrdenService {
         Orden guardada = ordenRepository.save(orden);
 
         try {
+
             System.out.println("Contactando a ms-pagos para la orden: " + guardada.getId());
             pagoClient.buscarPagoPorOrdenId(guardada.getId());
             System.out.println("Pago Aceptado");
+
         } catch (Exception e) {
+
             System.out.println("Pago RECHAZADO.");
+        }
+
+        try {
+
+            System.out.println("Verificando usuario " + dto.getUsuarioId() + " con ms-usuarios...");
+            UsuarioDTO usuario = usuarioClient.obtenerUsuarioPorId(dto.getUsuarioId());
+            System.out.println("¡Usuario confirmado! Nombre: " + usuario.getNombre());
+
+        } catch (Exception e) {
+
+            throw new RuntimeException("No se puede crear la orden. El usuario ID " + dto.getUsuarioId() + " no existe o ms-usuarios está caído.");
         }
 
         return guardada;
