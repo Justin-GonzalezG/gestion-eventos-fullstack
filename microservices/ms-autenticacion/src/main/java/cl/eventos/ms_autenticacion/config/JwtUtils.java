@@ -24,13 +24,13 @@ public class JwtUtils {
                 .setSubject(username)
                 .setIssuedAt(new java.util.Date())
                 .setExpiration(new java.util.Date(System.currentTimeMillis() + expirationTime))
-                .signWith(getSigningKey()) // Aquí ya no dará error
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public String getNombreUsuarioDesdeToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey()) // Usa la llave para abrir el token
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
