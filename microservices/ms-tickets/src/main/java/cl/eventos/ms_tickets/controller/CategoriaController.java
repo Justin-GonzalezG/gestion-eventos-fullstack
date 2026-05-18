@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor
-
 public class CategoriaController {
 
     private final CategoriaService categoriaService;
@@ -30,14 +30,15 @@ public class CategoriaController {
     // http://localhost:8084/api/categorias/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Categoria> obtenerPorId(@PathVariable Long id) {
-        return categoriaService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Categoria> categoriaOpt = categoriaService.obtenerPorId(id);
+        if (categoriaOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(categoriaOpt.get());
     }
 
     // POST: Creamos una Categoria nueva.
     // http://localhost:8084/api/categorias/crear
-
     /*
 {
     "nombre": "",
@@ -55,7 +56,6 @@ public class CategoriaController {
 
     // PUT: Actualizamos la Categoria por su ID.
     // http://localhost:8084/api/categorias/{id}
-
     /*
     {
         "nombre":,
@@ -64,19 +64,17 @@ public class CategoriaController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Categoria datos) {
-        return categoriaService.obtenerPorId(id)
-                .map(existente -> {
+        Optional<Categoria> categoriaOpt = categoriaService.obtenerPorId(id);
+        if (categoriaOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-                    datos.setId(id);
-                    Categoria actualizada = categoriaService.guardar(datos);
-                    Map<String, Object> respuesta = new LinkedHashMap<>();
-                    respuesta.put("mensaje", "Categoría actualizada correctamente");
-                    respuesta.put("categoria", actualizada);
-
-                    return ResponseEntity.ok(respuesta);
-
-                })
-                .orElse(ResponseEntity.notFound().build());
+        datos.setId(id);
+        Categoria actualizada = categoriaService.guardar(datos);
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("mensaje", "Categoría actualizada correctamente");
+        respuesta.put("categoria", actualizada);
+        return ResponseEntity.ok(respuesta);
     }
 
     // DELETE: Eliminamos la Categoria permanentemente por su ID.
