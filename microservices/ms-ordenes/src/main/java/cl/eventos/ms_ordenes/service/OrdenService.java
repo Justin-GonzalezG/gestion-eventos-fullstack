@@ -20,8 +20,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OrdenService {
 
@@ -31,14 +33,19 @@ public class OrdenService {
     private final AuthClient authClient;
     private final UsuarioClient usuarioClient;
 
-    @Transactional
     public Orden crearOrden(OrdenRequestDTO dto, String token) {
-
         Map<String, Object> authRespuesta = authClient.validarToken(token);
 
         if (authRespuesta == null || !(boolean) authRespuesta.get("valido")) {
-
             throw new RuntimeException("Error: Acceso denegado. Debes estar autenticado para crear órdenes.");
+        }
+
+        try {
+            System.out.println("Verificando usuario " + dto.getUsuarioId() + " con ms-usuarios...");
+            UsuarioDTO usuario = usuarioClient.obtenerUsuarioPorId(dto.getUsuarioId());
+            System.out.println("¡Usuario confirmado! Nombre: " + usuario.getNombre());
+        } catch (Exception e) {
+            throw new RuntimeException("No se puede crear la orden. El usuario ID " + dto.getUsuarioId() + " no existe o ms-usuarios está caído.");
         }
 
         Orden orden = new Orden();
@@ -48,7 +55,6 @@ public class OrdenService {
         BigDecimal totalGeneral = BigDecimal.ZERO;
 
         for (DetalleRequestDTO det : dto.getDetalles()) {
-
             TicketDTO info = ticketClient.obtenerTicketPorId(det.getTicketId());
 
             DetalleOrden detalle = new DetalleOrden();
@@ -71,25 +77,11 @@ public class OrdenService {
         Orden guardada = ordenRepository.save(orden);
 
         try {
-
             System.out.println("Contactando a ms-pagos para la orden: " + guardada.getId());
             pagoClient.buscarPagoPorOrdenId(guardada.getId());
             System.out.println("Pago Aceptado");
-
         } catch (Exception e) {
-
             System.out.println("Pago RECHAZADO.");
-        }
-
-        try {
-
-            System.out.println("Verificando usuario " + dto.getUsuarioId() + " con ms-usuarios...");
-            UsuarioDTO usuario = usuarioClient.obtenerUsuarioPorId(dto.getUsuarioId());
-            System.out.println("¡Usuario confirmado! Nombre: " + usuario.getNombre());
-
-        } catch (Exception e) {
-
-            throw new RuntimeException("No se puede crear la orden. El usuario ID " + dto.getUsuarioId() + " no existe o ms-usuarios está caído.");
         }
 
         return guardada;
@@ -99,17 +91,25 @@ public class OrdenService {
         return ordenRepository.findAll();
     }
 
-    @Transactional
-    public Orden actualizarEstado(Long id, String nuevoEstado) {
-        Orden orden = ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
-        orden.setEstado(nuevoEstado);
-
-        return ordenRepository.save(orden);
+    public Optional<Orden> obtenerPorId(Long id) {
+        return ordenRepository.findById(id);
     }
 
     public List<Orden> obtenerPorUsuario(Long usuarioId) {
         return ordenRepository.findByUsuarioId(usuarioId);
+    }
+
+    public Optional<Orden> actualizarEstado(Long id, String nuevoEstado) {
+        Optional<Orden> resultado = ordenRepository.findById(id);
+
+        if (!resultado.isPresent()) {
+            return Optional.empty();
+        }
+
+        Orden orden = resultado.get();
+        orden.setEstado(nuevoEstado);
+
+        return Optional.of(ordenRepository.save(orden));
     }
 
     public void eliminarOrden(Long id) {
@@ -121,10 +121,5 @@ public class OrdenService {
 
     public boolean estaPagado(Long ticketId) {
         return ordenRepository.existsByEstadoAndDetalles_TicketId("PAGADA", ticketId);
-    }
-
-    public Orden obtenerPorId(Long id) {
-        return ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
     }
 }
