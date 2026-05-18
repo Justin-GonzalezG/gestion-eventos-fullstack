@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,12 +61,28 @@ public class PagoService {
         return mapearAResponse(pagoRepository.save(pago));
     }
 
+    public Optional<PagoResponseDTO> updateOptional(Long id, PagoRequestDTO dto) {
+        return pagoRepository.findById(id).map(pago -> {
+            pago.setMonto(dto.getMonto());
+            pago.setMetodoPago(dto.getMetodoPago());
+            return mapearAResponse(pagoRepository.save(pago));
+        });
+    }
+
     @Transactional
     public PagoResponseDTO actualizarEstado(Long id, String nuevoEstado) {
         Pago pago = pagoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
         pago.setEstadoPago(nuevoEstado.toUpperCase());
         return mapearAResponse(pagoRepository.save(pago));
+    }
+
+    @Transactional
+    public Optional<PagoResponseDTO> actualizarEstadoOptional(Long id, String nuevoEstado) {
+        return pagoRepository.findById(id).map(pago -> {
+            pago.setEstadoPago(nuevoEstado.toUpperCase());
+            return mapearAResponse(pagoRepository.save(pago));
+        });
     }
 
     private PagoResponseDTO mapearAResponse(Pago pago) {
@@ -87,6 +104,14 @@ public class PagoService {
 
     public PagoResponseDTO findById(Long id) {
         return mapearAResponse(pagoRepository.findById(id).orElseThrow());
+    }
+
+    public Optional<PagoResponseDTO> findByIdOptional(Long id) {
+        return pagoRepository.findById(id).map(this::mapearAResponse);
+    }
+
+    public boolean existsById(Long id) {
+        return pagoRepository.existsById(id);
     }
 
     public void delete(Long id) {
