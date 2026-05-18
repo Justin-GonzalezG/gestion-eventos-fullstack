@@ -6,6 +6,7 @@ import cl.eventos.ms_checkin.dto.CheckInRequestDTO;
 import cl.eventos.ms_checkin.dto.CheckInResponseDTO;
 import cl.eventos.ms_checkin.model.CheckIn;
 import cl.eventos.ms_checkin.repository.CheckInRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 
 public class CheckInService {
@@ -24,7 +26,6 @@ public class CheckInService {
 
     private CheckInResponseDTO mapToDTO(CheckIn checkIn) {
         return new CheckInResponseDTO(
-
                 checkIn.getId(),
                 checkIn.getTicketId(),
                 checkIn.getFechaIngreso()
@@ -33,7 +34,6 @@ public class CheckInService {
 
     public List<CheckInResponseDTO> obtenerTodos() {
         return checkInRepository.findAll()
-
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -43,25 +43,42 @@ public class CheckInService {
         ticketClient.validarTicket(dto.getTicketId());
 
         if (checkInRepository.existsByTicketId(dto.getTicketId())) {
-
             throw new RuntimeException("ACCESO DENEGADO: El ticket ya fue utilizado.");
         }
 
         if (!ordenClient.verificarPagoTicket(dto.getTicketId())) {
-            
             throw new RuntimeException("ACCESO DENEGADO: El ticket no figura como PAGADO.");
         }
 
         CheckIn checkIn = new CheckIn();
         checkIn.setTicketId(dto.getTicketId());
-        return mapToDTO(checkInRepository.save(checkIn));
+
+        CheckIn guardado = checkInRepository.save(checkIn);
+        return mapToDTO(guardado);
+    }
+
+    public Optional<CheckInResponseDTO> obtenerPorId(Long id) {
+        Optional<CheckIn> resultado = checkInRepository.findById(id);
+
+        if (!resultado.isPresent()) {
+            throw new RuntimeException("El registro de check-in con la ID " + id + " no existe");
+        }
+
+        return Optional.of(mapToDTO(resultado.get()));
     }
 
     public Optional<CheckInResponseDTO> actualizar(Long id, CheckInRequestDTO dto) {
-        return checkInRepository.findById(id).map(existente -> {
-            existente.setTicketId(dto.getTicketId());
-            return mapToDTO(checkInRepository.save(existente));
-        });
+        Optional<CheckIn> resultado = checkInRepository.findById(id);
+
+        if (!resultado.isPresent()) {
+            return Optional.empty();
+        }
+
+        CheckIn existente = resultado.get();
+        existente.setTicketId(dto.getTicketId());
+
+        CheckIn actualizado = checkInRepository.save(existente);
+        return Optional.of(mapToDTO(actualizado));
     }
 
     public void eliminar(Long id) {
@@ -69,8 +86,13 @@ public class CheckInService {
     }
 
     public Optional<CheckInResponseDTO> buscarPorTicket(Long ticketId) {
-        return checkInRepository.buscarPorTicketId(ticketId)
-                .map(this::mapToDTO);
+        Optional<CheckIn> resultado = checkInRepository.buscarPorTicketId(ticketId);
+
+        if (!resultado.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapToDTO(resultado.get()));
     }
 
     public Long obtenerTotalAsistentes() {
