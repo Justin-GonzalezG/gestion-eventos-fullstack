@@ -12,11 +12,11 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
-
 public class TicketController {
 
     private final TicketService ticketService;
@@ -32,14 +32,15 @@ public class TicketController {
     // http://localhost:8084/api/tickets/{id}
     @GetMapping("/{id}")
     public ResponseEntity<TicketResponseDTO> obtenerPorId(@PathVariable Long id) {
-        return ticketService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<TicketResponseDTO> ticketOpt = ticketService.obtenerPorId(id);
+        if (ticketOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ticketOpt.get());
     }
 
     // POST: Creamos un nuevo Ticket.
     // http://localhost:8084/api/tickets/crear
-
     /*
 {
     "tipo": "",
@@ -61,14 +62,15 @@ public class TicketController {
     // http://localhost:8084/api/tickets/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody TicketRequestDTO dto) {
-        return ticketService.actualizar(id, dto)
-                .map(ticketActualizado -> {
-                    Map<String, Object> respuesta = new LinkedHashMap<>();
-                    respuesta.put("mensaje", "El ticket fue actualizado con éxito");
-                    respuesta.put("ticket", ticketActualizado);
-                    return ResponseEntity.ok(respuesta);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        Optional<TicketResponseDTO> ticketOpt = ticketService.actualizar(id, dto);
+        if (ticketOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("mensaje", "El ticket fue actualizado con éxito");
+        respuesta.put("ticket", ticketOpt.get());
+        return ResponseEntity.ok(respuesta);
     }
 
     // DELETE: Borramos el Ticket usando la ID.
@@ -79,10 +81,8 @@ public class TicketController {
             return ResponseEntity.status(404).body(Map.of("error", "El ticket con ID " + id + " no existe."));
         }
         ticketService.eliminar(id);
-
         Map<String, String> respuesta = new LinkedHashMap<>();
         respuesta.put("mensaje", "Ticket eliminado con éxito de la base de datos.");
-
         return ResponseEntity.ok(respuesta);
     }
 
