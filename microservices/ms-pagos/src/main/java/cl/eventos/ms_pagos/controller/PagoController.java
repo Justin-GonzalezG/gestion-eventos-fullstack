@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/pagos")
 @RequiredArgsConstructor
-
 public class PagoController {
 
     private final PagoService pagoService;
@@ -34,7 +34,7 @@ public class PagoController {
 
         System.out.println("Iniciando proceso de creación de pago...");
         String token = authHeader.replace("Bearer ", "");
-        
+
         PagoResponseDTO response = pagoService.save(pagoRequestDTO, token);
 
         Map<String, Object> respuesta = new LinkedHashMap<>();
@@ -54,20 +54,30 @@ public class PagoController {
     // GET: Buscar por ID.
     // http://localhost:8086/api/pagos/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<PagoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(pagoService.findById(id));
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        Optional<PagoResponseDTO> response = pagoService.findByIdOptional(id);
+
+        if (!response.isPresent()) {
+            return ResponseEntity.status(404).body("Pago no encontrado con el ID: " + id);
+        }
+
+        return ResponseEntity.ok(response.get());
     }
 
     // PUT: Actualizar el pago.
     // http://localhost:8086/api/pagos/actualizar/{id}
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<PagoResponseDTO> actualizar(@PathVariable Long id, @RequestBody PagoRequestDTO pagoRequestDTO) {
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody PagoRequestDTO pagoRequestDTO) {
         System.out.println("Actualizando datos del pago con ID: " + id);
 
-        PagoResponseDTO response = pagoService.update(id, pagoRequestDTO);
-        System.out.println("Pago con ID: " + id + " actualizado correctamente.");
+        Optional<PagoResponseDTO> response = pagoService.updateOptional(id, pagoRequestDTO);
 
-        return ResponseEntity.ok(response);
+        if (!response.isPresent()) {
+            return ResponseEntity.status(404).body("No se pudo actualizar porque el pago no existe.");
+        }
+
+        System.out.println("Pago con ID: " + id + " actualizado correctamente.");
+        return ResponseEntity.ok(response.get());
     }
 
     // PUT: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
@@ -76,11 +86,15 @@ public class PagoController {
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {
         System.out.println("Cambiando estado del Pago ID: " + id + " a " + nuevoEstado);
 
-        PagoResponseDTO response = pagoService.actualizarEstado(id, nuevoEstado);
+        Optional<PagoResponseDTO> response = pagoService.actualizarEstadoOptional(id, nuevoEstado);
+
+        if (!response.isPresent()) {
+            return ResponseEntity.status(404).body("No se encontró el registro de pago para cambiar su estado.");
+        }
 
         Map<String, Object> respuesta = new LinkedHashMap<>();
         respuesta.put("mensaje", "Estado de pago actualizado correctamente");
-        respuesta.put("pago", response);
+        respuesta.put("pago", response.get());
 
         return ResponseEntity.ok(respuesta);
     }
@@ -90,6 +104,11 @@ public class PagoController {
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         System.out.println("Solicitud para eliminar pago con ID: " + id);
+
+        if (!pagoService.existsById(id)) {
+            return ResponseEntity.status(404).body("El registro de pago no existe en la base de datos.");
+        }
+
         pagoService.delete(id);
 
         Map<String, String> respuesta = new LinkedHashMap<>();
