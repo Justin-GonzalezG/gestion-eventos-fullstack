@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_reportes.exception;
+package cl.eventos.ms_reportes.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
