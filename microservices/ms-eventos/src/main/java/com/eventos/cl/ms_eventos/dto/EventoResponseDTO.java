@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_eventos.dto;
+package cl.eventos.ms_eventos.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
