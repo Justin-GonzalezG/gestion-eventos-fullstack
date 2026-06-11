@@ -1,9 +1,9 @@
-package com.eventos.cl.ms_soporte.controller;
+package cl.eventos.ms_soporte.controller;
 
-import com.eventos.cl.ms_soporte.dto.TicketConDetalleDTO;
-import com.eventos.cl.ms_soporte.dto.TicketRequestDTO;
-import com.eventos.cl.ms_soporte.dto.TicketResponseDTO;
-import com.eventos.cl.ms_soporte.service.TicketSoporteService;
+import cl.eventos.ms_soporte.dto.TicketConDetalleDTO;
+import cl.eventos.ms_soporte.dto.TicketRequestDTO;
+import cl.eventos.ms_soporte.dto.TicketResponseDTO;
+import cl.eventos.ms_soporte.service.TicketSoporteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
