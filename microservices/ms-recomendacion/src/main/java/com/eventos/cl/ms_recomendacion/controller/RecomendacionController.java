@@ -1,9 +1,9 @@
-package com.eventos.cl.ms_recomendacion.controller;
+package cl.eventos.ms_recomendacion.controller;
 
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionConDetalleDTO;
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionRequestDTO;
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionResponseDTO;
-import com.eventos.cl.ms_recomendacion.service.RecomendacionService;
+import cl.eventos.ms_recomendacion.dto.RecomendacionConDetalleDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionRequestDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionResponseDTO;
+import cl.eventos.ms_recomendacion.service.RecomendacionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
