@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_soporte.exception;
+package cl.eventos.ms_soporte.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
