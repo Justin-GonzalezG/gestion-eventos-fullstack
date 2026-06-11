@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_recomendacion.exception;
+package cl.eventos.ms_recomendacion.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
