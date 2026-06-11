@@ -1,8 +1,7 @@
-package com.eventos.cl.ms_eventos;
+package cl.eventos.ms_eventos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
