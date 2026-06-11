@@ -1,13 +1,13 @@
-package com.eventos.cl.ms_reportes.service;
+package cl.eventos.ms_reportes.service;
 
-import com.eventos.cl.ms_reportes.dto.ReporteRequestDTO;
-import com.eventos.cl.ms_reportes.dto.ReporteResponseDTO;
-import com.eventos.cl.ms_reportes.client.OrdenClient;
-import com.eventos.cl.ms_reportes.client.PagoClient;
-import com.eventos.cl.ms_reportes.client.TicketClient;
-import com.eventos.cl.ms_reportes.dto.*;
-import com.eventos.cl.ms_reportes.model.Reporte;
-import com.eventos.cl.ms_reportes.repository.ReporteRepository;
+import cl.eventos.ms_reportes.dto.ReporteRequestDTO;
+import cl.eventos.ms_reportes.dto.ReporteResponseDTO;
+import cl.eventos.ms_reportes.client.OrdenClient;
+import cl.eventos.ms_reportes.client.PagoClient;
+import cl.eventos.ms_reportes.client.TicketClient;
+import cl.eventos.ms_reportes.dto.*;
+import cl.eventos.ms_reportes.model.Reporte;
+import cl.eventos.ms_reportes.repository.ReporteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -142,6 +142,11 @@ public class ReporteService {
             return mapearAResponse(actualizado);
         });
     }
+
+    public void eliminar(Long id) {
+        reporteRepository.deleteById(id);
+    }
+}
 
     public void eliminar(Long id) {
         reporteRepository.deleteById(id);
