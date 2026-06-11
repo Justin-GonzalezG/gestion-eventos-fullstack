@@ -1,11 +1,11 @@
-package com.eventos.cl.ms_eventos.service;
+package cl.eventos.ms_eventos.service;
 
-import com.eventos.cl.ms_eventos.client.TicketClient;
-import com.eventos.cl.ms_eventos.dto.EventoRequestDTO;
-import com.eventos.cl.ms_eventos.dto.EventoResponseDTO;
-import com.eventos.cl.ms_eventos.dto.TicketDTO;
-import com.eventos.cl.ms_eventos.model.Evento;
-import com.eventos.cl.ms_eventos.repository.EventoRepository;
+import cl.eventos.ms_eventos.client.TicketClient;
+import cl.eventos.ms_eventos.dto.EventoRequestDTO;
+import cl.eventos.ms_eventos.dto.EventoResponseDTO;
+import cl.eventos.ms_eventos.dto.TicketDTO;
+import cl.eventos.ms_eventos.model.Evento;
+import cl.eventos.ms_eventos.repository.EventoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
