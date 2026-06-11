@@ -1,6 +1,6 @@
-package com.eventos.cl.ms_recomendacion.repository;
+package cl.eventos.ms_recomendacion.repository;
 
-import com.eventos.cl.ms_recomendacion.model.Recomendacion;
+import cl.eventos.ms_recomendacion.model.Recomendacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
