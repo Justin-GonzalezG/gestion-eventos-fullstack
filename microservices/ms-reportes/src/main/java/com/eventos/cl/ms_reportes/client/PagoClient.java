@@ -1,14 +1,13 @@
-package com.eventos.cl.ms_reportes.client;
+package cl.eventos.ms_reportes.client;
 
-import com.eventos.cl.ms_reportes.dto.PagoDTO;
+import cl.eventos.ms_reportes.dto.PagoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import java.util.List;
 
-@FeignClient(name = "ms-pagos", url = "${ms.pagos.url}")
+@FeignClient(name = "ms-pagos")
 public interface PagoClient {
 
-    @GetMapping("/listar")
+    @GetMapping("/api/pagos/listar")
     List<PagoDTO> listarPagos();
 }
