@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_recomendacion.dto;
+package cl.eventos.ms_recomendacion.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
