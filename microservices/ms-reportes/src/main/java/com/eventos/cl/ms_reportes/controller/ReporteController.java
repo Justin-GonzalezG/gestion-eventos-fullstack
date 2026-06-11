@@ -1,8 +1,8 @@
-package com.eventos.cl.ms_reportes.controller;
+package cl.eventos.ms_reportes.controller;
 
-import com.eventos.cl.ms_reportes.dto.ReporteRequestDTO;
-import com.eventos.cl.ms_reportes.dto.ReporteResponseDTO;
-import com.eventos.cl.ms_reportes.service.ReporteService;
+import cl.eventos.ms_reportes.dto.ReporteRequestDTO;
+import cl.eventos.ms_reportes.dto.ReporteResponseDTO;
+import cl.eventos.ms_reportes.service.ReporteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
