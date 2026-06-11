@@ -1,14 +1,14 @@
-package com.eventos.cl.ms_recomendacion.service;
+package cl.eventos.ms_recomendacion.service;
 
-import com.eventos.cl.ms_recomendacion.client.EventoClient;
-import com.eventos.cl.ms_recomendacion.client.UsuarioClient;
-import com.eventos.cl.ms_recomendacion.dto.EventoDTO;
-import com.eventos.cl.ms_recomendacion.dto.UsuarioDTO;
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionConDetalleDTO;
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionRequestDTO;
-import com.eventos.cl.ms_recomendacion.dto.RecomendacionResponseDTO;
-import com.eventos.cl.ms_recomendacion.model.Recomendacion;
-import com.eventos.cl.ms_recomendacion.repository.RecomendacionRepository;
+import cl.eventos.ms_recomendacion.client.EventoClient;
+import cl.eventos.ms_recomendacion.client.UsuarioClient;
+import cl.eventos.ms_recomendacion.dto.EventoDTO;
+import cl.eventos.ms_recomendacion.dto.UsuarioDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionConDetalleDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionRequestDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionResponseDTO;
+import cl.eventos.ms_recomendacion.model.Recomendacion;
+import cl.eventos.ms_recomendacion.repository.RecomendacionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
