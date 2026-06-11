@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_reportes.dto;
+package cl.eventos.ms_reportes.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
