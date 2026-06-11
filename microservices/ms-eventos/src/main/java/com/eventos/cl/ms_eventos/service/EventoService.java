@@ -54,7 +54,7 @@ public class EventoService {
 
         try {
 
-            Long idCategoria = 1L;
+            Long idCategoria = resultado.get().getId();
 
             System.out.println("Solicitando tickets filtrados para la categoría: " + idCategoria);
             List<TicketDTO> ticketsFiltrados = ticketClient.buscarPorCategoria(idCategoria);
@@ -62,10 +62,11 @@ public class EventoService {
             System.out.println("¡Tickets filtrados acoplados con éxito!");
 
         } catch (Exception e) {
+            System.out.println("--- ERROR DE CONEXIÓN CON MS-TICKETS ---");
+            e.printStackTrace();
 
-        System.out.println("--- ERROR DE CONEXIÓN CON MS-TICKETS ---");
-        e.printStackTrace();
-    }
+            response.setTickets(java.util.Collections.emptyList());
+        }
 
         return Optional.of(response);
     }
