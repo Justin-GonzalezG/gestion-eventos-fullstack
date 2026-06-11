@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_recomendacion;
+package cl.eventos.ms_recomendacion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
