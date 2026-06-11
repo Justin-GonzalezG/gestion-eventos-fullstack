@@ -1,8 +1,8 @@
-package com.eventos.cl.ms_eventos.controller;
+package cl.eventos.ms_eventos.controller;
 
-import com.eventos.cl.ms_eventos.dto.EventoRequestDTO;
-import com.eventos.cl.ms_eventos.dto.EventoResponseDTO;
-import com.eventos.cl.ms_eventos.service.EventoService;
+import cl.eventos.ms_eventos.dto.EventoRequestDTO;
+import cl.eventos.ms_eventos.dto.EventoResponseDTO;
+import cl.eventos.ms_eventos.service.EventoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
