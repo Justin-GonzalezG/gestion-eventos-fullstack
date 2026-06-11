@@ -1,6 +1,6 @@
-package com.eventos.cl.ms_soporte.repository;
+package cl.eventos.ms_soporte.repository;
 
-import com.eventos.cl.ms_soporte.model.TicketSoporte;
+import cl.eventos.ms_soporte.model.TicketSoporte;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
