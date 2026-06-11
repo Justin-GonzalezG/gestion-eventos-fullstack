@@ -1,6 +1,6 @@
-package com.eventos.cl.ms_eventos.client;
+package cl.eventos.ms_eventos.client;
 
-import com.eventos.cl.ms_eventos.dto.TicketDTO;
+import cl.eventos.ms_eventos.dto.TicketDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
