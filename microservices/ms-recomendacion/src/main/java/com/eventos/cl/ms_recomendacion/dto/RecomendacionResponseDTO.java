@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_recomendacion.dto;
+package cl.eventos.ms_recomendacion.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
