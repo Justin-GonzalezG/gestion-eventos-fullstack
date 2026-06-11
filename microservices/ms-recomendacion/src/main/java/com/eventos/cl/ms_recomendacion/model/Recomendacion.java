@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_recomendacion.model;
+package cl.eventos.ms_recomendacion.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
