@@ -1,4 +1,4 @@
-package com.eventos.cl.ms_eventos.model;
+package cl.eventos.ms_eventos.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
