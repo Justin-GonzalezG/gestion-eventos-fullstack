@@ -1,14 +1,14 @@
-package com.eventos.cl.ms_soporte.service;
+package cl.eventos.ms_soporte.service;
 
-import com.eventos.cl.ms_soporte.client.OrdenClient;
-import com.eventos.cl.ms_soporte.client.UsuarioClient;
-import com.eventos.cl.ms_soporte.dto.OrdenDTO;
-import com.eventos.cl.ms_soporte.dto.TicketConDetalleDTO;
-import com.eventos.cl.ms_soporte.dto.TicketRequestDTO;
-import com.eventos.cl.ms_soporte.dto.TicketResponseDTO;
-import com.eventos.cl.ms_soporte.dto.UsuarioDTO;
-import com.eventos.cl.ms_soporte.model.TicketSoporte;
-import com.eventos.cl.ms_soporte.repository.TicketSoporteRepository;
+import cl.eventos.ms_soporte.client.OrdenClient;
+import cl.eventos.ms_soporte.client.UsuarioClient;
+import cl.eventos.ms_soporte.dto.OrdenDTO;
+import cl.eventos.ms_soporte.dto.TicketConDetalleDTO;
+import cl.eventos.ms_soporte.dto.TicketRequestDTO;
+import cl.eventos.ms_soporte.dto.TicketResponseDTO;
+import cl.eventos.ms_soporte.dto.UsuarioDTO;
+import cl.eventos.ms_soporte.model.TicketSoporte;
+import cl.eventos.ms_soporte.repository.TicketSoporteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
