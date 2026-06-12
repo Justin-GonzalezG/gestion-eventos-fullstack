@@ -5,10 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "ms-tickets", url = "${config.ms-tickets.url}")
+@FeignClient(name = "ms-tickets")
 public interface TicketClient {
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/tickets/{id}")
     ResponseEntity<?> validarTicket(@PathVariable("id") Long id);
-
 }
