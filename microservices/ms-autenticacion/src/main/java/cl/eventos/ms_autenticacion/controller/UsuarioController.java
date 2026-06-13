@@ -5,6 +5,10 @@ import cl.eventos.ms_autenticacion.dto.UsuarioRegistroDTO;
 import cl.eventos.ms_autenticacion.dto.UsuarioResponseDTO;
 import cl.eventos.ms_autenticacion.model.Rol;
 import cl.eventos.ms_autenticacion.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import cl.eventos.ms_autenticacion.config.JwtUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Autenticación", description = "Endpoints de gestión de usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -34,11 +40,16 @@ public class UsuarioController {
     // URL: http://localhost:8081/api/auth/login
 
     /*
-{
-    "username": "",
-    "password": ""
-}
-     */
+    {
+        "username": "",
+        "password": ""
+    }
+    */
+    @Operation(summary = "Login de usuario", description = "Valida credenciales y retorna un JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login exitoso"),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         log.info("Intento de login para: {}", loginRequest.getUsername());
@@ -47,10 +58,13 @@ public class UsuarioController {
 
         if (resultado.isPresent()) {
             var user = resultado.get();
+
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                 String token = jwtUtils.generarToken(user.getUsername());
                 return ResponseEntity.ok(java.util.Map.of("token", token));
+
             } else {
+                
                 log.warn("Contraseña incorrecta para el usuario: {}", loginRequest.getUsername());
                 return ResponseEntity.status(401).build();
             }
@@ -78,14 +92,16 @@ public class UsuarioController {
 
     /* Para agregar un usuario
 
-{
-    "username":"",
-    "password":"",
-    "email":"",
-    "rol": ""(Mayuscula)
-}
+    {
+        "username":"",
+        "password":"",
+        "email":"",
+        "rol": ""(Mayuscula)
+    }
 
-*/
+    */
+    @Operation(summary = "Registrar nuevo usuario")
+    @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente")
     @PostMapping("/registrar")
     public ResponseEntity<UsuarioResponseDTO> registrar(@Valid @RequestBody UsuarioRegistroDTO dto) {
         log.info("Petición de registro recibida para el usuario: {}", dto.getUsername());
