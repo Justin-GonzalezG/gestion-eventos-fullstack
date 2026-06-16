@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_pagos.controller</a> &gt; <span class="el_source">PagoController.java</span></div><h1>PagoController.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_pagos.controller;
+
+import cl.eventos.ms_pagos.dto.PagoRequestDTO;
+import cl.eventos.ms_pagos.dto.PagoResponseDTO;
+import cl.eventos.ms_pagos.service.PagoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/pagos&quot;)
+@RequiredArgsConstructor
+public class PagoController {
+
+    private final PagoService pagoService;
+
+    // POST: Crear el pago.
+    // http://localhost:8086/api/pagos/crear
+    /*
+{
+    &quot;ordenId&quot;: ,
+    &quot;monto&quot;: ,
+    &quot;metodoPago&quot;: &quot;&quot;
+}
+     */
+    @PostMapping(&quot;/crear&quot;)
+    public ResponseEntity&lt;?&gt; crear(@RequestBody PagoRequestDTO pagoRequestDTO, @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+
+<span class="fc" id="L35">        System.out.println(&quot;Iniciando proceso de creación de pago...&quot;);</span>
+<span class="fc" id="L36">        String token = authHeader.replace(&quot;Bearer &quot;, &quot;&quot;);</span>
+
+<span class="fc" id="L38">        PagoResponseDTO response = pagoService.save(pagoRequestDTO, token);</span>
+
+<span class="fc" id="L40">        Map&lt;String, Object&gt; respuesta = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L41">        respuesta.put(&quot;mensaje&quot;, &quot;Pago procesado exitosamente&quot;);</span>
+<span class="fc" id="L42">        respuesta.put(&quot;pago&quot;, response);</span>
+
+<span class="fc" id="L44">        return new ResponseEntity&lt;&gt;(respuesta, HttpStatus.CREATED);</span>
+    }
+
+    // GET: Listar los pagos.
+    // http://localhost:8086/api/pagos/listar
+    @GetMapping(&quot;/listar&quot;)
+    public ResponseEntity&lt;List&lt;PagoResponseDTO&gt;&gt; listar() {
+<span class="fc" id="L51">        return ResponseEntity.ok(pagoService.findAll());</span>
+    }
+
+    // GET: Buscar por ID.
+    // http://localhost:8086/api/pagos/{id}
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; buscarPorId(@PathVariable Long id) {
+<span class="fc" id="L58">        Optional&lt;PagoResponseDTO&gt; response = pagoService.findByIdOptional(id);</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!response.isPresent()) {</span>
+<span class="fc" id="L61">            return ResponseEntity.status(404).body(&quot;Pago no encontrado con el ID: &quot; + id);</span>
+        }
+
+<span class="fc" id="L64">        return ResponseEntity.ok(response.get());</span>
+    }
+
+    // PUT: Actualizar el pago.
+    // http://localhost:8086/api/pagos/actualizar/{id}
+    @PutMapping(&quot;/actualizar/{id}&quot;)
+    public ResponseEntity&lt;?&gt; actualizar(@PathVariable Long id, @RequestBody PagoRequestDTO pagoRequestDTO) {
+<span class="fc" id="L71">        System.out.println(&quot;Actualizando datos del pago con ID: &quot; + id);</span>
+
+<span class="fc" id="L73">        Optional&lt;PagoResponseDTO&gt; response = pagoService.updateOptional(id, pagoRequestDTO);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (!response.isPresent()) {</span>
+<span class="fc" id="L76">            return ResponseEntity.status(404).body(&quot;No se pudo actualizar porque el pago no existe.&quot;);</span>
+        }
+
+<span class="fc" id="L79">        System.out.println(&quot;Pago con ID: &quot; + id + &quot; actualizado correctamente.&quot;);</span>
+<span class="fc" id="L80">        return ResponseEntity.ok(response.get());</span>
+    }
+
+    // PUT: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
+    // http://localhost:8086/api/pagos/actualizar-estado/1?nuevoEstado=
+    @PatchMapping(&quot;/actualizar-estado/{id}&quot;)
+    public ResponseEntity&lt;?&gt; actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {
+<span class="fc" id="L87">        System.out.println(&quot;Cambiando estado del Pago ID: &quot; + id + &quot; a &quot; + nuevoEstado);</span>
+
+<span class="fc" id="L89">        Optional&lt;PagoResponseDTO&gt; response = pagoService.actualizarEstadoOptional(id, nuevoEstado);</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (!response.isPresent()) {</span>
+<span class="fc" id="L92">            return ResponseEntity.status(404).body(&quot;No se encontró el registro de pago para cambiar su estado.&quot;);</span>
+        }
+
+<span class="fc" id="L95">        Map&lt;String, Object&gt; respuesta = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L96">        respuesta.put(&quot;mensaje&quot;, &quot;Estado de pago actualizado correctamente&quot;);</span>
+<span class="fc" id="L97">        respuesta.put(&quot;pago&quot;, response.get());</span>
+
+<span class="fc" id="L99">        return ResponseEntity.ok(respuesta);</span>
+    }
+
+    // DELETE: Eliminar el historial del Pago.
+    // http://localhost:8086/api/pagos/eliminar/{id}
+    @DeleteMapping(&quot;/eliminar/{id}&quot;)
+    public ResponseEntity&lt;?&gt; eliminar(@PathVariable Long id) {
+<span class="fc" id="L106">        System.out.println(&quot;Solicitud para eliminar pago con ID: &quot; + id);</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (!pagoService.existsById(id)) {</span>
+<span class="fc" id="L109">            return ResponseEntity.status(404).body(&quot;El registro de pago no existe en la base de datos.&quot;);</span>
+        }
+
+<span class="fc" id="L112">        pagoService.delete(id);</span>
+
+<span class="fc" id="L114">        Map&lt;String, String&gt; respuesta = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L115">        respuesta.put(&quot;mensaje&quot;, &quot;El registro de pago ha sido eliminado correctamente de la base de datos.&quot;);</span>
+
+<span class="fc" id="L117">        System.out.println(&quot;Pago con ID: &quot; + id + &quot; eliminado con éxito.&quot;);</span>
+<span class="fc" id="L118">        return ResponseEntity.ok(respuesta);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
