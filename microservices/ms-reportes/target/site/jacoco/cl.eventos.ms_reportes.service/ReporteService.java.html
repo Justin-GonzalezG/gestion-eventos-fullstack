@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReporteService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_reportes.service</a> &gt; <span class="el_source">ReporteService.java</span></div><h1>ReporteService.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_reportes.service;
+
+import cl.eventos.ms_reportes.dto.ReporteRequestDTO;
+import cl.eventos.ms_reportes.dto.ReporteResponseDTO;
+import cl.eventos.ms_reportes.client.OrdenClient;
+import cl.eventos.ms_reportes.client.PagoClient;
+import cl.eventos.ms_reportes.client.TicketClient;
+import cl.eventos.ms_reportes.dto.*;
+import cl.eventos.ms_reportes.model.Reporte;
+import cl.eventos.ms_reportes.repository.ReporteRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ReporteService {
+
+    private final ReporteRepository reporteRepository;
+    
+    // Inyectamos las 3 antenas Feign
+    private final PagoClient pagoClient;
+    private final OrdenClient ordenClient;
+    private final TicketClient ticketClient;
+
+    private ReporteResponseDTO mapearAResponse(Reporte reporte) {
+<span class="fc" id="L36">        return new ReporteResponseDTO(</span>
+<span class="fc" id="L37">                reporte.getId(),</span>
+<span class="fc" id="L38">                reporte.getFechaGeneracion(),</span>
+<span class="fc" id="L39">                reporte.getPeriodo(),</span>
+<span class="fc" id="L40">                reporte.getIngresosTotales(),</span>
+<span class="fc" id="L41">                reporte.getTotalTicketsVendidos(),</span>
+<span class="fc" id="L42">                reporte.getTicketMasPopular()</span>
+        );
+    }
+
+    public List&lt;ReporteResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L47">        return reporteRepository.findAll()</span>
+<span class="fc" id="L48">                .stream()</span>
+<span class="fc" id="L49">                .map(this::mapearAResponse)</span>
+<span class="fc" id="L50">                .collect(Collectors.toList());</span>
+    }
+
+    public Optional&lt;ReporteResponseDTO&gt; obtenerPorId(Long id) {
+<span class="fc" id="L54">        return reporteRepository.findById(id).map(this::mapearAResponse);</span>
+    }
+
+    public ReporteResponseDTO guardar(ReporteRequestDTO dto) {
+<span class="fc" id="L58">        Reporte reporte = new Reporte();</span>
+<span class="fc" id="L59">        reporte.setFechaGeneracion(new Date()); </span>
+<span class="fc" id="L60">        reporte.setPeriodo(dto.getPeriodo());</span>
+
+        // 1. Calcular Ingresos Totales Automáticamente desde ms-pagos
+<span class="fc" id="L63">        BigDecimal ingresosCalculados = BigDecimal.ZERO;</span>
+        try {
+<span class="fc" id="L65">            List&lt;PagoDTO&gt; pagos = pagoClient.listarPagos();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            for (PagoDTO pago : pagos) {</span>
+                // Solo sumar si está aprobado
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">                if (&quot;APROBADO&quot;.equalsIgnoreCase(pago.getEstadoPago()) &amp;&amp; pago.getMonto() != null) {</span>
+<span class="fc" id="L69">                    ingresosCalculados = ingresosCalculados.add(pago.getMonto());</span>
+                }
+<span class="fc" id="L71">            }</span>
+<span class="fc" id="L72">        } catch (Exception e) {</span>
+<span class="fc" id="L73">            System.out.println(&quot;Error conectando con ms-pagos: &quot; + e.getMessage());</span>
+<span class="fc" id="L74">        }</span>
+<span class="fc" id="L75">        reporte.setIngresosTotales(ingresosCalculados);</span>
+
+        // 2. Calcular Tickets Vendidos y Ticket Más Popular desde ms-ordenes
+<span class="fc" id="L78">        int totalTicketsCalculados = 0;</span>
+<span class="fc" id="L79">        String nombreTicketMasPopular = &quot;Desconocido&quot;;</span>
+        
+        try {
+<span class="fc" id="L82">            List&lt;OrdenDTO&gt; ordenes = ordenClient.listarOrdenes();</span>
+<span class="fc" id="L83">            Map&lt;Long, Integer&gt; conteoTickets = new HashMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            for (OrdenDTO orden : ordenes) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">                if (orden.getDetalles() != null) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">                    for (DetalleOrdenDTO detalle : orden.getDetalles()) {</span>
+<span class="pc bpc" id="L88" title="1 of 4 branches missed.">                        if (detalle.getCantidad() != null &amp;&amp; detalle.getTicketId() != null) {</span>
+<span class="fc" id="L89">                            totalTicketsCalculados += detalle.getCantidad();</span>
+<span class="fc" id="L90">                            conteoTickets.put(detalle.getTicketId(), </span>
+<span class="fc" id="L91">                                conteoTickets.getOrDefault(detalle.getTicketId(), 0) + detalle.getCantidad());</span>
+                        }
+<span class="fc" id="L93">                    }</span>
+                }
+<span class="fc" id="L95">            }</span>
+
+            // Buscar el ID del ticket que más se vendió
+<span class="fc" id="L98">            Long idMasVendido = null;</span>
+<span class="fc" id="L99">            int maxVentas = 0;</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            for (Map.Entry&lt;Long, Integer&gt; entry : conteoTickets.entrySet()) {</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">                if (entry.getValue() &gt; maxVentas) {</span>
+<span class="fc" id="L102">                    maxVentas = entry.getValue();</span>
+<span class="fc" id="L103">                    idMasVendido = entry.getKey();</span>
+                }
+<span class="fc" id="L105">            }</span>
+
+            // 3. Viajar a ms-tickets para descubrir el nombre del ticket más popular
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            if (idMasVendido != null) {</span>
+                try {
+<span class="fc" id="L110">                    TicketDTO ticketDTO = ticketClient.obtenerTicketPorId(idMasVendido);</span>
+<span class="fc bfc" id="L111" title="All 4 branches covered.">                    if (ticketDTO != null &amp;&amp; ticketDTO.getTipo() != null) {</span>
+<span class="fc" id="L112">                        nombreTicketMasPopular = ticketDTO.getTipo();</span>
+                    } else {
+<span class="fc" id="L114">                        nombreTicketMasPopular = &quot;Ticket ID &quot; + idMasVendido;</span>
+                    }
+<span class="fc" id="L116">                } catch (Exception e) {</span>
+<span class="fc" id="L117">                    System.out.println(&quot;Error conectando con ms-tickets: &quot; + e.getMessage());</span>
+<span class="fc" id="L118">                    nombreTicketMasPopular = &quot;Ticket ID &quot; + idMasVendido;</span>
+<span class="fc" id="L119">                }</span>
+            }
+
+<span class="fc" id="L122">        } catch (Exception e) {</span>
+<span class="fc" id="L123">            System.out.println(&quot;Error conectando con ms-ordenes: &quot; + e.getMessage());</span>
+<span class="fc" id="L124">        }</span>
+
+<span class="fc" id="L126">        reporte.setTotalTicketsVendidos(totalTicketsCalculados);</span>
+<span class="fc" id="L127">        reporte.setTicketMasPopular(nombreTicketMasPopular);</span>
+
+<span class="fc" id="L129">        Reporte guardado = reporteRepository.save(reporte);</span>
+<span class="fc" id="L130">        return mapearAResponse(guardado);</span>
+    }
+
+    public Optional&lt;ReporteResponseDTO&gt; actualizar(Long id, ReporteRequestDTO dto) {
+<span class="fc" id="L134">        return reporteRepository.findById(id).map(reporte -&gt; {</span>
+            // No actualizamos la fecha de generacion, solo los datos
+<span class="fc" id="L136">            reporte.setPeriodo(dto.getPeriodo());</span>
+<span class="fc" id="L137">            reporte.setIngresosTotales(dto.getIngresosTotales());</span>
+<span class="fc" id="L138">            reporte.setTotalTicketsVendidos(dto.getTotalTicketsVendidos());</span>
+<span class="fc" id="L139">            reporte.setTicketMasPopular(dto.getTicketMasPopular());</span>
+            
+<span class="fc" id="L141">            Reporte actualizado = reporteRepository.save(reporte);</span>
+<span class="fc" id="L142">            return mapearAResponse(actualizado);</span>
+        });
+    }
+
+    public void eliminar(Long id) {
+<span class="fc" id="L147">        reporteRepository.deleteById(id);</span>
+<span class="fc" id="L148">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

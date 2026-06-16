@@ -1,0 +1,15 @@
+cl\eventos\ms_reportes\service\ReporteService.class
+cl\eventos\ms_reportes\dto\ReporteRequestDTO.class
+cl\eventos\ms_reportes\client\OrdenClient.class
+cl\eventos\ms_reportes\dto\TicketDTO.class
+cl\eventos\ms_reportes\MsReportesApplication.class
+cl\eventos\ms_reportes\controller\ReporteController.class
+cl\eventos\ms_reportes\client\PagoClient.class
+cl\eventos\ms_reportes\dto\DetalleOrdenDTO.class
+cl\eventos\ms_reportes\dto\PagoDTO.class
+cl\eventos\ms_reportes\repository\ReporteRepository.class
+cl\eventos\ms_reportes\dto\ReporteResponseDTO.class
+cl\eventos\ms_reportes\model\Reporte.class
+cl\eventos\ms_reportes\client\TicketClient.class
+cl\eventos\ms_reportes\dto\OrdenDTO.class
+cl\eventos\ms_reportes\exception\GlobalExceptionHandler.class
