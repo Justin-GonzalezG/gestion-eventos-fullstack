@@ -1,0 +1,16 @@
+cl\eventos\ms_ordenes\repository\DetalleOrdenRepository.class
+cl\eventos\ms_ordenes\dto\DetalleRequestDTO.class
+cl\eventos\ms_ordenes\client\PagoClient.class
+cl\eventos\ms_ordenes\repository\OrdenRepository.class
+cl\eventos\ms_ordenes\exception\GlobalExceptionHandler.class
+cl\eventos\ms_ordenes\dto\OrdenRequestDTO.class
+cl\eventos\ms_ordenes\model\DetalleOrden.class
+cl\eventos\ms_ordenes\MsOrdenesApplication.class
+cl\eventos\ms_ordenes\service\OrdenService.class
+cl\eventos\ms_ordenes\controller\OrdenController.class
+cl\eventos\ms_ordenes\client\TicketClient.class
+cl\eventos\ms_ordenes\client\UsuarioClient.class
+cl\eventos\ms_ordenes\model\Orden.class
+cl\eventos\ms_ordenes\dto\UsuarioDTO.class
+cl\eventos\ms_ordenes\client\AuthClient.class
+cl\eventos\ms_ordenes\dto\TicketDTO.class

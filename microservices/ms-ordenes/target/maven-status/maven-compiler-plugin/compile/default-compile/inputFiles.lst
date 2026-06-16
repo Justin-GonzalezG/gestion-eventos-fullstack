@@ -1,0 +1,16 @@
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\client\AuthClient.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\client\PagoClient.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\client\TicketClient.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\client\UsuarioClient.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\controller\OrdenController.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\dto\DetalleRequestDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\dto\OrdenRequestDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\dto\TicketDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\dto\UsuarioDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\exception\GlobalExceptionHandler.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\model\DetalleOrden.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\model\Orden.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\MsOrdenesApplication.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\repository\DetalleOrdenRepository.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\repository\OrdenRepository.java
+C:\Users\benja\OneDrive\Desktop\ms-ordenes\src\main\java\cl\eventos\ms_ordenes\service\OrdenService.java

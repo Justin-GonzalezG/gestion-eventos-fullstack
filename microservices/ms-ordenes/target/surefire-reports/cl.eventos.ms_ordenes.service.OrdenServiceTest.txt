@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cl.eventos.ms_ordenes.service.OrdenServiceTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.427 s -- in cl.eventos.ms_ordenes.service.OrdenServiceTest

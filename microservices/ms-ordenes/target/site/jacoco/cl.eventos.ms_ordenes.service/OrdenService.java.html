@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrdenService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_ordenes.service</a> &gt; <span class="el_source">OrdenService.java</span></div><h1>OrdenService.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_ordenes.service;
+
+import cl.eventos.ms_ordenes.client.AuthClient;
+import cl.eventos.ms_ordenes.client.PagoClient;
+import cl.eventos.ms_ordenes.client.TicketClient;
+import cl.eventos.ms_ordenes.client.UsuarioClient;
+import cl.eventos.ms_ordenes.dto.DetalleRequestDTO;
+import cl.eventos.ms_ordenes.dto.OrdenRequestDTO;
+import cl.eventos.ms_ordenes.dto.TicketDTO;
+import cl.eventos.ms_ordenes.dto.UsuarioDTO;
+import cl.eventos.ms_ordenes.model.DetalleOrden;
+import cl.eventos.ms_ordenes.model.Orden;
+import cl.eventos.ms_ordenes.repository.DetalleOrdenRepository;
+import cl.eventos.ms_ordenes.repository.OrdenRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class OrdenService {
+
+    private final OrdenRepository ordenRepository;
+    private final TicketClient ticketClient;
+    private final PagoClient pagoClient;
+    private final AuthClient authClient;
+    private final UsuarioClient usuarioClient;
+
+    public Orden crearOrden(OrdenRequestDTO dto, String token) {
+
+        // Validación de seguridad con el token, esto es lo que conecta con el Auth.
+<span class="fc" id="L39">        Map&lt;String, Object&gt; authRespuesta = authClient.validarToken(token);</span>
+<span class="fc bfc" id="L40" title="All 4 branches covered.">        if (authRespuesta == null || !(boolean) authRespuesta.get(&quot;valido&quot;)) {</span>
+<span class="fc" id="L41">            throw new RuntimeException(&quot;Acceso denegado: Token no válido.&quot;);</span>
+        }
+
+        // Aqui se valida el Usuario por la ID de el, ademas de la conexion con el ms-Usuario.
+<span class="fc" id="L45">        UsuarioDTO usuario = usuarioClient.obtenerUsuarioPorId(dto.getUsuarioId());</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L47">            throw new RuntimeException(&quot;El usuario con ID &quot; + dto.getUsuarioId() + &quot; no existe.&quot;);</span>
+        }
+
+        // La validacion de negocio: Aqui se verifica la existencia y stock de todos los tickets antes de procesar la compra.
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (DetalleRequestDTO det : dto.getDetalles()) {</span>
+<span class="fc" id="L52">            TicketDTO info = ticketClient.obtenerTicketPorId(det.getTicketId());</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (info == null) {</span>
+<span class="fc" id="L54">                throw new RuntimeException(&quot;El ticket ID &quot; + det.getTicketId() + &quot; no existe.&quot;);</span>
+            }
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (info.getStock() &lt; det.getCantidad()) {</span>
+<span class="fc" id="L57">                throw new RuntimeException(&quot;Stock insuficiente para el ticket: &quot; + info.getId());</span>
+            }
+<span class="fc" id="L59">        }</span>
+
+        // Creacion de la Orden.
+<span class="fc" id="L62">        Orden orden = new Orden();</span>
+<span class="fc" id="L63">        orden.setUsuarioId(dto.getUsuarioId());</span>
+<span class="fc" id="L64">        orden.setEstado(&quot;PENDIENTE&quot;);</span>
+
+<span class="fc" id="L66">        List&lt;DetalleOrden&gt; listaDetalles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L67">        BigDecimal totalGeneral = BigDecimal.ZERO;</span>
+
+        // Procesamiento de detalles y actualización de stock.
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (DetalleRequestDTO det : dto.getDetalles()) {</span>
+<span class="fc" id="L71">            TicketDTO info = ticketClient.obtenerTicketPorId(det.getTicketId());</span>
+
+<span class="fc" id="L73">            DetalleOrden detalle = new DetalleOrden();</span>
+<span class="fc" id="L74">            detalle.setTicketId(det.getTicketId());</span>
+<span class="fc" id="L75">            detalle.setCantidad(det.getCantidad());</span>
+<span class="fc" id="L76">            detalle.setPrecioUnitario(info.getPrecio());</span>
+<span class="fc" id="L77">            detalle.setSubtotal(info.getPrecio().multiply(new BigDecimal(det.getCantidad())));</span>
+<span class="fc" id="L78">            detalle.setOrden(orden);</span>
+
+<span class="fc" id="L80">            listaDetalles.add(detalle);</span>
+<span class="fc" id="L81">            totalGeneral = totalGeneral.add(detalle.getSubtotal());</span>
+            
+<span class="fc" id="L83">            ticketClient.actualizarStock(info.getId(), info.getStock() - det.getCantidad());</span>
+<span class="fc" id="L84">        }</span>
+
+<span class="fc" id="L86">        orden.setDetalles(listaDetalles);</span>
+<span class="fc" id="L87">        orden.setGranTotal(totalGeneral);</span>
+
+<span class="fc" id="L89">        return ordenRepository.save(orden);</span>
+    }
+
+    public List&lt;Orden&gt; listarTodas() {
+<span class="fc" id="L93">        return ordenRepository.findAll();</span>
+    }
+
+    public Optional&lt;Orden&gt; obtenerPorId(Long id) {
+<span class="fc" id="L97">        return ordenRepository.findById(id);</span>
+    }
+
+    public List&lt;Orden&gt; obtenerPorUsuario(Long usuarioId) {
+<span class="fc" id="L101">        return ordenRepository.findByUsuarioId(usuarioId);</span>
+    }
+
+    public Optional&lt;Orden&gt; actualizarEstado(Long id, String nuevoEstado) {
+<span class="fc" id="L105">        Optional&lt;Orden&gt; resultado = ordenRepository.findById(id);</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (!resultado.isPresent()) {</span>
+<span class="fc" id="L108">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L111">        Orden orden = resultado.get();</span>
+<span class="fc" id="L112">        orden.setEstado(nuevoEstado);</span>
+
+<span class="fc" id="L114">        return Optional.of(ordenRepository.save(orden));</span>
+    }
+
+    public void eliminarOrden(Long id) {
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (!ordenRepository.existsById(id)) {</span>
+<span class="fc" id="L119">            throw new RuntimeException(&quot;La orden con ID &quot; + id + &quot; no existe.&quot;);</span>
+        }
+<span class="fc" id="L121">        ordenRepository.deleteById(id);</span>
+<span class="fc" id="L122">    }</span>
+
+    public boolean estaPagado(Long ticketId) {
+<span class="fc" id="L125">        return ordenRepository.existsByEstadoAndDetalles_TicketId(&quot;PAGADA&quot;, ticketId);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
