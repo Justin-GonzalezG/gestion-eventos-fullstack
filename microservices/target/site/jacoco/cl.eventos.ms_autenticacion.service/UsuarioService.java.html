@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ms-autenticacion</a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_autenticacion.service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_autenticacion.service;
+
+import cl.eventos.ms_autenticacion.dto.UsuarioRegistroDTO;
+import cl.eventos.ms_autenticacion.dto.UsuarioResponseDTO;
+import cl.eventos.ms_autenticacion.model.Rol;
+import cl.eventos.ms_autenticacion.model.Usuario;
+import cl.eventos.ms_autenticacion.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+<span class="fc" id="L21">@Slf4j</span>
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    private UsuarioResponseDTO mapearAResponse(Usuario usuario) {
+<span class="fc" id="L28">        return new UsuarioResponseDTO(</span>
+<span class="fc" id="L29">                usuario.getId(),</span>
+<span class="fc" id="L30">                usuario.getUsername(),</span>
+<span class="fc" id="L31">                usuario.getEmail(),</span>
+<span class="fc" id="L32">                usuario.getRol(),</span>
+<span class="fc" id="L33">                usuario.isActivo()</span>
+        );
+    }
+
+    public List&lt;UsuarioResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L38">        log.info(&quot;Obteniendo lista completa de usuarios&quot;);</span>
+
+<span class="fc" id="L40">        return usuarioRepository.findAll()</span>
+<span class="fc" id="L41">                .stream()</span>
+<span class="fc" id="L42">                .map(this::mapearAResponse)</span>
+<span class="fc" id="L43">                .collect(Collectors.toList());</span>
+    }
+
+    public Optional&lt;UsuarioResponseDTO&gt; obtenerPorId(Long id) {
+<span class="fc" id="L47">        log.info(&quot;Buscando usuario con ID: {}&quot;, id);</span>
+<span class="fc" id="L48">        Optional&lt;Usuario&gt; resultado = usuarioRepository.findById(id);</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (!resultado.isPresent()) {</span>
+<span class="fc" id="L51">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L54">        return Optional.of(mapearAResponse(resultado.get()));</span>
+    }
+
+    public UsuarioResponseDTO guardar(UsuarioRegistroDTO dto) {
+<span class="fc" id="L58">        log.info(&quot;Iniciando proceso de registro para usuario: {}&quot;, dto.getUsername());</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (usuarioRepository.existsByUsername(dto.getUsername())) {</span>
+<span class="fc" id="L61">            log.warn(&quot;Fallo al registrar: El nombre de usuario {} ya existe&quot;, dto.getUsername());</span>
+<span class="fc" id="L62">            throw new RuntimeException(&quot;El nombre de usuario ya existe.&quot;);</span>
+        }
+
+<span class="fc" id="L65">        Usuario usuario = new Usuario();</span>
+<span class="fc" id="L66">        usuario.setUsername(dto.getUsername());</span>
+
+<span class="fc" id="L68">        String passwordHaseada = passwordEncoder.encode(dto.getPassword());</span>
+<span class="fc" id="L69">        usuario.setPassword(passwordHaseada);</span>
+<span class="fc" id="L70">        log.debug(&quot;Contraseña cifrada con éxito para {}&quot;, dto.getUsername());</span>
+
+<span class="fc" id="L72">        usuario.setEmail(dto.getEmail());</span>
+<span class="fc" id="L73">        usuario.setRol(dto.getRol());</span>
+
+<span class="fc" id="L75">        Usuario guardado = usuarioRepository.save(usuario);</span>
+<span class="fc" id="L76">        log.info(&quot;Usuario registrado exitosamente. ID generado: {}&quot;, guardado.getId());</span>
+
+<span class="fc" id="L78">        return mapearAResponse(guardado);</span>
+    }
+
+    public void eliminar(Long id) {
+<span class="fc" id="L82">        log.info(&quot;Solicitud para eliminar usuario ID: {}&quot;, id);</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (!usuarioRepository.existsById(id)) {</span>
+<span class="fc" id="L85">            log.error(&quot;Error al eliminar: Usuario ID {} no encontrado&quot;, id);</span>
+<span class="fc" id="L86">            throw new RuntimeException(&quot;Usuario no encontrado.&quot;);</span>
+        }
+<span class="fc" id="L88">        usuarioRepository.deleteById(id);</span>
+<span class="fc" id="L89">    }</span>
+
+    public List&lt;UsuarioResponseDTO&gt; buscarPorRol(Rol rol) {
+<span class="fc" id="L92">        log.info(&quot;Filtrando usuarios por rol: {}&quot;, rol);</span>
+
+<span class="fc" id="L94">        return usuarioRepository.findByRol(rol)</span>
+<span class="fc" id="L95">                .stream()</span>
+<span class="fc" id="L96">                .map(this::mapearAResponse)</span>
+<span class="fc" id="L97">                .collect(Collectors.toList());</span>
+    }
+
+    public Optional&lt;UsuarioResponseDTO&gt; actualizarOptional(Long id, UsuarioRegistroDTO dto) {
+<span class="fc" id="L101">        log.info(&quot;Actualizando datos del usuario ID: {}&quot;, id);</span>
+<span class="fc" id="L102">        Optional&lt;Usuario&gt; resultado = usuarioRepository.findById(id);</span>
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (!resultado.isPresent()) {</span>
+<span class="fc" id="L105">            log.error(&quot;No se puede actualizar: ID {} no existe&quot;, id);</span>
+<span class="fc" id="L106">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L109">        Usuario usuario = resultado.get();</span>
+<span class="fc" id="L110">        usuario.setUsername(dto.getUsername());</span>
+<span class="fc" id="L111">        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));</span>
+<span class="fc" id="L112">        usuario.setEmail(dto.getEmail());</span>
+<span class="fc" id="L113">        usuario.setRol(dto.getRol());</span>
+
+<span class="fc" id="L115">        Usuario actualizado = usuarioRepository.save(usuario);</span>
+<span class="fc" id="L116">        log.info(&quot;Usuario ID {} actualizado correctamente&quot;, id);</span>
+
+<span class="fc" id="L118">        return Optional.of(mapearAResponse(actualizado));</span>
+    }
+
+    public List&lt;UsuarioResponseDTO&gt; buscarPorUsername(String username) {
+<span class="fc" id="L122">        log.info(&quot;Buscando usuarios que coincidan con: {}&quot;, username);</span>
+
+<span class="fc" id="L124">        return usuarioRepository.findByUsernameContainingIgnoreCase(username)</span>
+<span class="fc" id="L125">                .stream()</span>
+<span class="fc" id="L126">                .map(this::mapearAResponse)</span>
+<span class="fc" id="L127">                .collect(Collectors.toList());</span>
+    }
+
+    public Optional&lt;Usuario&gt; buscarPorUsernameParaAuth(String username) {
+<span class="fc" id="L131">        log.info(&quot;Buscando entidad completa para login: {}&quot;, username);</span>
+<span class="fc" id="L132">        return usuarioRepository.findByUsername(username);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

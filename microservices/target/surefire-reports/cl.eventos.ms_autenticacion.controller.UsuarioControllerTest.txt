@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cl.eventos.ms_autenticacion.controller.UsuarioControllerTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.53 s -- in cl.eventos.ms_autenticacion.controller.UsuarioControllerTest

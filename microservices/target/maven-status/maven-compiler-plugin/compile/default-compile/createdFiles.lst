@@ -1,0 +1,13 @@
+cl\eventos\ms_autenticacion\dto\UsuarioRegistroDTO.class
+cl\eventos\ms_autenticacion\config\JwtUtils.class
+cl\eventos\ms_autenticacion\model\Usuario.class
+cl\eventos\ms_autenticacion\dto\UsuarioResponseDTO.class
+cl\eventos\ms_autenticacion\config\SecurityConfig.class
+cl\eventos\ms_autenticacion\MsAutenticacionApplication.class
+cl\eventos\ms_autenticacion\exception\GlobalExceptionHandler.class
+cl\eventos\ms_autenticacion\model\Rol.class
+cl\eventos\ms_autenticacion\repository\UsuarioRepository.class
+cl\eventos\ms_autenticacion\config\OpenApiConfig.class
+cl\eventos\ms_autenticacion\controller\UsuarioController.class
+cl\eventos\ms_autenticacion\dto\LoginRequestDTO.class
+cl\eventos\ms_autenticacion\service\UsuarioService.class
