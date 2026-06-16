@@ -1,0 +1,63 @@
+server:
+  port: ${PORT:8091}
+
+spring:
+  application:
+    name: ms-gateway
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    config:
+      enabled: false
+      import-check:
+        enabled: false
+    gateway:
+      mvc:
+        discovery:
+          locator:
+            enabled: true
+        routes:
+          - id: ms-autenticacion
+            uri: ${ROUTE_AUTH_URI:lb://ms-autenticacion}
+            predicates:
+              - Path=/api/auth/**
+          - id: ms-checkin
+            uri: ${ROUTE_CHECKIN_URI:lb://ms-checkin}
+            predicates:
+              - Path=/api/checkin/**
+          - id: ms-eventos
+            uri: ${ROUTE_EVENTOS_URI:lb://ms-eventos}
+            predicates:
+              - Path=/api/eventos/**
+          - id: ms-ordenes
+            uri: ${ROUTE_ORDENES_URI:lb://ms-ordenes}
+            predicates:
+              - Path=/api/ordenes/**
+          - id: ms-pagos
+            uri: ${ROUTE_PAGOS_URI:lb://ms-pagos}
+            predicates:
+              - Path=/api/pagos/**
+          - id: ms-recomendacion
+            uri: ${ROUTE_RECOMENDACION_URI:lb://ms-recomendacion}
+            predicates:
+              - Path=/api/recomendaciones/**
+          - id: ms-reportes
+            uri: ${ROUTE_REPORTES_URI:lb://ms-reportes}
+            predicates:
+              - Path=/api/reportes/**
+          - id: ms-soporte
+            uri: ${ROUTE_SOPORTE_URI:lb://ms-soporte}
+            predicates:
+              - Path=/api/soporte/**
+          - id: ms-tickets
+            uri: ${ROUTE_TICKETS_URI:lb://ms-tickets}
+            predicates:
+              - Path=/api/tickets/**
+          - id: ms-categorias
+            uri: ${ROUTE_CATEGORIAS_URI:lb://ms-tickets}
+            predicates:
+              - Path=/api/categorias/**
+          - id: ms-usuarios
+            uri: ${ROUTE_USUARIOS_URI:lb://ms-usuarios}
+            predicates:
+              - Path=/api/usuarios/**
