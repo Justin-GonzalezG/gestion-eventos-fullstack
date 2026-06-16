@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_eventos.controller</a> &gt; <span class="el_source">EventoController.java</span></div><h1>EventoController.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_eventos.controller;
+
+import cl.eventos.ms_eventos.dto.EventoRequestDTO;
+import cl.eventos.ms_eventos.dto.EventoResponseDTO;
+import cl.eventos.ms_eventos.service.EventoService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/eventos&quot;)
+@RequiredArgsConstructor
+public class EventoController {
+
+    private final EventoService eventoService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;EventoResponseDTO&gt;&gt; listar() {
+<span class="fc" id="L22">        List&lt;EventoResponseDTO&gt; eventos = eventoService.obtenerTodos();</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (eventos.isEmpty()) {</span>
+<span class="fc" id="L24">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="fc" id="L26">        return ResponseEntity.ok(eventos);</span>
+    }
+
+    // @Valid atrapa errores de capacidad nula, nombres vacios, etc.
+    @PostMapping
+    public ResponseEntity&lt;EventoResponseDTO&gt; crear(@Valid @RequestBody EventoRequestDTO dto) {
+<span class="fc" id="L32">        return ResponseEntity.status(201).body(eventoService.guardar(dto));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;EventoResponseDTO&gt; buscar(@PathVariable Long id) {
+<span class="fc" id="L37">        return eventoService.obtenerPorId(id)</span>
+<span class="fc" id="L38">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L39">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;EventoResponseDTO&gt; actualizar(@PathVariable Long id, @Valid @RequestBody EventoRequestDTO dto) {
+<span class="fc" id="L44">        return eventoService.actualizar(id, dto)</span>
+<span class="fc" id="L45">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L46">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; borrar(@PathVariable Long id) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (eventoService.obtenerPorId(id).isEmpty()) {</span>
+<span class="fc" id="L52">            return ResponseEntity.notFound().build();</span>
+        }
+<span class="fc" id="L54">        eventoService.eliminar(id);</span>
+<span class="fc" id="L55">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

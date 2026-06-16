@@ -1,0 +1,10 @@
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\client\TicketClient.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\controller\EventoController.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\dto\EventoRequestDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\dto\EventoResponseDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\dto\TicketDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\exception\GlobalExceptionHandler.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\model\Evento.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\MsEventosApplication.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\repository\EventoRepository.java
+C:\Users\benja\OneDrive\Desktop\ms-eventos\src\main\java\cl\eventos\ms_eventos\service\EventoService.java

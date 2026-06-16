@@ -1,0 +1,10 @@
+cl\eventos\ms_eventos\client\TicketClient.class
+cl\eventos\ms_eventos\model\Evento.class
+cl\eventos\ms_eventos\exception\GlobalExceptionHandler.class
+cl\eventos\ms_eventos\controller\EventoController.class
+cl\eventos\ms_eventos\repository\EventoRepository.class
+cl\eventos\ms_eventos\dto\EventoResponseDTO.class
+cl\eventos\ms_eventos\dto\EventoRequestDTO.class
+cl\eventos\ms_eventos\service\EventoService.class
+cl\eventos\ms_eventos\MsEventosApplication.class
+cl\eventos\ms_eventos\dto\TicketDTO.class
