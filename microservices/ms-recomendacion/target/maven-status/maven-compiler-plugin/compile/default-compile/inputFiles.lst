@@ -1,0 +1,13 @@
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\client\EventoClient.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\client\UsuarioClient.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\controller\RecomendacionController.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\dto\EventoDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\dto\RecomendacionConDetalleDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\dto\RecomendacionRequestDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\dto\RecomendacionResponseDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\dto\UsuarioDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\exception\GlobalExceptionHandler.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\model\Recomendacion.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\MsRecomendacionApplication.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\repository\RecomendacionRepository.java
+C:\Users\benja\OneDrive\Desktop\ms-recomendacion\src\main\java\cl\eventos\ms_recomendacion\service\RecomendacionService.java

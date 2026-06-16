@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RecomendacionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_recomendacion.controller</a> &gt; <span class="el_source">RecomendacionController.java</span></div><h1>RecomendacionController.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_recomendacion.controller;
+
+import cl.eventos.ms_recomendacion.dto.RecomendacionConDetalleDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionRequestDTO;
+import cl.eventos.ms_recomendacion.dto.RecomendacionResponseDTO;
+import cl.eventos.ms_recomendacion.service.RecomendacionService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/recomendaciones&quot;)
+@RequiredArgsConstructor
+public class RecomendacionController {
+
+    private final RecomendacionService recomendacionService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;RecomendacionResponseDTO&gt;&gt; listar() {
+<span class="fc" id="L23">        List&lt;RecomendacionResponseDTO&gt; recomendaciones = recomendacionService.obtenerTodas();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (recomendaciones.isEmpty()) {</span>
+<span class="fc" id="L25">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="fc" id="L27">        return ResponseEntity.ok(recomendaciones);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;RecomendacionResponseDTO&gt; crear(@Valid @RequestBody RecomendacionRequestDTO dto) {
+<span class="fc" id="L32">        return ResponseEntity.status(201).body(recomendacionService.guardar(dto));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;RecomendacionResponseDTO&gt; buscar(@PathVariable Long id) {
+<span class="fc" id="L37">        return recomendacionService.obtenerPorId(id)</span>
+<span class="fc" id="L38">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L39">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;RecomendacionResponseDTO&gt; actualizar(@PathVariable Long id, @Valid @RequestBody RecomendacionRequestDTO dto) {
+<span class="fc" id="L44">        return recomendacionService.actualizar(id, dto)</span>
+<span class="fc" id="L45">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L46">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; borrar(@PathVariable Long id) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (recomendacionService.obtenerPorId(id).isEmpty()) {</span>
+<span class="fc" id="L52">            return ResponseEntity.notFound().build();</span>
+        }
+<span class="fc" id="L54">        recomendacionService.eliminar(id);</span>
+<span class="fc" id="L55">        return ResponseEntity.noContent().build();</span>
+    }
+
+    // Esta ruta GET devuelve un JSON combinado de Recomendaciones + Eventos.
+    // Llama al servicio interno que por debajo utiliza OpenFeign para conectarse al ms-eventos.
+    @GetMapping(&quot;/{id}/detalle&quot;)
+    public ResponseEntity&lt;RecomendacionConDetalleDTO&gt; obtenerDetalle(@PathVariable Long id) {
+<span class="fc" id="L62">        return recomendacionService.obtenerDetalleCompleto(id)</span>
+<span class="fc" id="L63">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L64">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
