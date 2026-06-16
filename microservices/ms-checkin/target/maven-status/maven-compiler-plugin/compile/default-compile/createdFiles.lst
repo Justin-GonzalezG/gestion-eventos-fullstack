@@ -1,0 +1,10 @@
+cl\eventos\ms_checkin\exception\GlobalExceptionHandler.class
+cl\eventos\ms_checkin\MsCheckinApplication.class
+cl\eventos\ms_checkin\model\CheckIn.class
+cl\eventos\ms_checkin\repository\CheckInRepository.class
+cl\eventos\ms_checkin\service\CheckInService.class
+cl\eventos\ms_checkin\dto\CheckInResponseDTO.class
+cl\eventos\ms_checkin\client\OrdenClient.class
+cl\eventos\ms_checkin\controller\CheckInController.class
+cl\eventos\ms_checkin\dto\CheckInRequestDTO.class
+cl\eventos\ms_checkin\client\TicketClient.class
