@@ -1,0 +1,11 @@
+cl\eventos\ms_usuarios\dto\UsuarioConAuthDTO.class
+cl\eventos\ms_usuarios\exception\GlobalExceptionHandler.class
+cl\eventos\ms_usuarios\dto\UsuarioResponseDTO.class
+cl\eventos\ms_usuarios\model\Usuario.class
+cl\eventos\ms_usuarios\repository\UsuarioRepository.class
+cl\eventos\ms_usuarios\client\AuthClient.class
+cl\eventos\ms_usuarios\controller\UsuarioController.class
+cl\eventos\ms_usuarios\MsUsuariosApplication.class
+cl\eventos\ms_usuarios\dto\UsuarioRequestDTO.class
+cl\eventos\ms_usuarios\dto\AuthDTO.class
+cl\eventos\ms_usuarios\service\UsuarioService.class

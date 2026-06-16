@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">cl.eventos.ms_usuarios.service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package cl.eventos.ms_usuarios.service;
+
+import cl.eventos.ms_usuarios.dto.UsuarioRequestDTO;
+import cl.eventos.ms_usuarios.dto.UsuarioResponseDTO;
+import cl.eventos.ms_usuarios.model.Usuario;
+import cl.eventos.ms_usuarios.repository.UsuarioRepository;
+import cl.eventos.ms_usuarios.client.AuthClient;
+import cl.eventos.ms_usuarios.dto.AuthDTO;
+import cl.eventos.ms_usuarios.dto.UsuarioConAuthDTO;
+import feign.FeignException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final AuthClient authClient;
+
+    private UsuarioResponseDTO mapearAResponse(Usuario usuario) {
+<span class="fc" id="L28">        return new UsuarioResponseDTO(</span>
+<span class="fc" id="L29">                usuario.getId(),</span>
+<span class="fc" id="L30">                usuario.getRun(),</span>
+<span class="fc" id="L31">                usuario.getNombre(),</span>
+<span class="fc" id="L32">                usuario.getApellido(),</span>
+<span class="fc" id="L33">                usuario.getEmail(),</span>
+<span class="fc" id="L34">                usuario.getTelefono(),</span>
+<span class="fc" id="L35">                usuario.getDireccion()</span>
+        );
+    }
+
+    public List&lt;UsuarioResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L40">        return usuarioRepository.findAll()</span>
+<span class="fc" id="L41">                .stream()</span>
+<span class="fc" id="L42">                .map(this::mapearAResponse)</span>
+<span class="fc" id="L43">                .collect(Collectors.toList());</span>
+    }
+
+    public Optional&lt;UsuarioResponseDTO&gt; obtenerPorId(Long id) {
+<span class="fc" id="L47">        return usuarioRepository.findById(id).map(this::mapearAResponse);</span>
+    }
+
+    public Optional&lt;UsuarioConAuthDTO&gt; obtenerUsuarioConAuth(Long id) {
+<span class="fc" id="L51">        return usuarioRepository.findById(id).map(usuario -&gt; {</span>
+<span class="fc" id="L52">            UsuarioConAuthDTO dto = new UsuarioConAuthDTO();</span>
+<span class="fc" id="L53">            dto.setId(usuario.getId());</span>
+<span class="fc" id="L54">            dto.setRun(usuario.getRun());</span>
+<span class="fc" id="L55">            dto.setNombre(usuario.getNombre());</span>
+<span class="fc" id="L56">            dto.setApellido(usuario.getApellido());</span>
+<span class="fc" id="L57">            dto.setEmail(usuario.getEmail());</span>
+<span class="fc" id="L58">            dto.setTelefono(usuario.getTelefono());</span>
+<span class="fc" id="L59">            dto.setDireccion(usuario.getDireccion());</span>
+
+            try {
+                // Buscamos las credenciales en ms-autenticacion usando el correo electrónico
+<span class="fc" id="L63">                List&lt;AuthDTO&gt; credenciales = authClient.buscarPorEmail(usuario.getEmail());</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                if (!credenciales.isEmpty()) {</span>
+<span class="fc" id="L65">                    AuthDTO auth = credenciales.get(0);</span>
+<span class="fc" id="L66">                    dto.setUsername(auth.getUsername());</span>
+<span class="fc" id="L67">                    dto.setRol(auth.getRol());</span>
+<span class="fc" id="L68">                } else {</span>
+<span class="fc" id="L69">                    dto.setUsername(&quot;SIN_CUENTA&quot;);</span>
+<span class="fc" id="L70">                    dto.setRol(&quot;SIN_ROL&quot;);</span>
+                }
+<span class="fc" id="L72">            } catch (FeignException e) {</span>
+                // Si el ms-autenticacion está apagado o falla
+<span class="fc" id="L74">                dto.setUsername(&quot;ERROR_CONEXION&quot;);</span>
+<span class="fc" id="L75">                dto.setRol(&quot;ERROR_CONEXION&quot;);</span>
+<span class="fc" id="L76">            }</span>
+<span class="fc" id="L77">            return dto;</span>
+        });
+    }
+
+    public UsuarioResponseDTO guardar(UsuarioRequestDTO dto) {
+<span class="fc" id="L82">        Usuario usuario = new Usuario();</span>
+<span class="fc" id="L83">        usuario.setRun(dto.getRun());</span>
+<span class="fc" id="L84">        usuario.setNombre(dto.getNombre());</span>
+<span class="fc" id="L85">        usuario.setApellido(dto.getApellido());</span>
+<span class="fc" id="L86">        usuario.setEmail(dto.getEmail());</span>
+<span class="fc" id="L87">        usuario.setTelefono(dto.getTelefono());</span>
+<span class="fc" id="L88">        usuario.setDireccion(dto.getDireccion());</span>
+
+<span class="fc" id="L90">        Usuario guardado = usuarioRepository.save(usuario);</span>
+<span class="fc" id="L91">        return mapearAResponse(guardado);</span>
+    }
+
+    public Optional&lt;UsuarioResponseDTO&gt; actualizar(Long id, UsuarioRequestDTO dto) {
+<span class="fc" id="L95">        return usuarioRepository.findById(id).map(usuario -&gt; {</span>
+<span class="fc" id="L96">            usuario.setRun(dto.getRun());</span>
+<span class="fc" id="L97">            usuario.setNombre(dto.getNombre());</span>
+<span class="fc" id="L98">            usuario.setApellido(dto.getApellido());</span>
+<span class="fc" id="L99">            usuario.setEmail(dto.getEmail());</span>
+<span class="fc" id="L100">            usuario.setTelefono(dto.getTelefono());</span>
+<span class="fc" id="L101">            usuario.setDireccion(dto.getDireccion());</span>
+            
+<span class="fc" id="L103">            Usuario actualizado = usuarioRepository.save(usuario);</span>
+<span class="fc" id="L104">            return mapearAResponse(actualizado);</span>
+        });
+    }
+
+    public void eliminar(Long id) {
+<span class="fc" id="L109">        usuarioRepository.deleteById(id);</span>
+<span class="fc" id="L110">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
