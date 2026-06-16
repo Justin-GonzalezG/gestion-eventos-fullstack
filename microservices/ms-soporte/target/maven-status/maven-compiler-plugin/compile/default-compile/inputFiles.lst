@@ -1,0 +1,13 @@
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\client\OrdenClient.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\client\UsuarioClient.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\controller\TicketSoporteController.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\dto\OrdenDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\dto\TicketConDetalleDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\dto\TicketRequestDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\dto\TicketResponseDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\dto\UsuarioDTO.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\exception\GlobalExceptionHandler.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\model\TicketSoporte.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\MsSoporteApplication.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\repository\TicketSoporteRepository.java
+C:\Users\benja\OneDrive\Desktop\ms-soporte\src\main\java\cl\eventos\ms_soporte\service\TicketSoporteService.java
