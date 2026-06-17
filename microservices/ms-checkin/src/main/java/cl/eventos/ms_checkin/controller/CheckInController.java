@@ -3,6 +3,8 @@ package cl.eventos.ms_checkin.controller;
 import cl.eventos.ms_checkin.dto.CheckInRequestDTO;
 import cl.eventos.ms_checkin.dto.CheckInResponseDTO;
 import cl.eventos.ms_checkin.service.CheckInService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/checkin")
 @RequiredArgsConstructor
-
+@Tag(name = "Check-in", description = "Endpoints para registro de ingresos")
 public class CheckInController {
 
     private final CheckInService checkInService;
@@ -25,6 +27,7 @@ public class CheckInController {
     "ticketId":
 }
      */
+    @Operation(summary = "Registrar nuevo ingreso")
     @PostMapping("/registrar")
     public ResponseEntity<CheckInResponseDTO> registrar(@Valid @RequestBody CheckInRequestDTO dto) {
         System.out.println("Iniciando registro de ingreso para Ticket ID: " + dto.getTicketId());
