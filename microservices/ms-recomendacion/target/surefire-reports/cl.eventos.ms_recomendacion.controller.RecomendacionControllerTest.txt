@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: cl.eventos.ms_recomendacion.controller.RecomendacionControllerTest
--------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.939 s -- in cl.eventos.ms_recomendacion.controller.RecomendacionControllerTest
