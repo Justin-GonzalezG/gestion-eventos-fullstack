@@ -1,21 +1,29 @@
+# Puerto
 server:
   port: ${PORT:8089}
 
+# Nombre del Microservicio
 spring:
   application:
     name: ms-soporte
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  # Desactivar autoconfiguración de Config Server
   cloud:
     config:
       enabled: false
       import-check:
         enabled: false
+  
+  # Configuración de Base de Datos MySQL
   datasource:
     url: ${DB_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:soporte_db}?createDatabaseIfNotExist=true&serverTimezone=UTC}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  # Configuración de Hibernate / JPA
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,3 +31,18 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+# Configuración de Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# Configuración de Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
