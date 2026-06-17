@@ -76,6 +76,7 @@ public class UsuarioController {
 
     // GET: La lista de todos los Usuarios.
     // http://localhost:8081/api/auth/usuarios
+    @Operation(summary = "Listar todos los Usuarios")
     @GetMapping("/usuarios")
     public ResponseEntity<List<UsuarioResponseDTO>> listar() {
         log.info("Cargando lista completa de usuarios...");
@@ -112,6 +113,7 @@ public class UsuarioController {
 
     // GET: Buscamos al Usuario por el ID.
     // http://localhost:8081/api/auth/usuario/{id}
+    @Operation(summary = "Buscar Usuario por su ID")
     @GetMapping("/usuario/{id}")
     public ResponseEntity<UsuarioResponseDTO> buscar(@PathVariable Long id) {
         log.info("Petición de búsqueda para ID: {}", id);
@@ -123,6 +125,7 @@ public class UsuarioController {
 
     // GET: Filtramos la lista de los Usuarios por su Rol.
     // http://localhost:8081/api/auth/usuario/rol/{rol}
+    @Operation(summary = "Buscar Usuarios por su Rol")
     @GetMapping("/usuario/rol/{rol}")
     public ResponseEntity<List<UsuarioResponseDTO>> buscarPorRol(@PathVariable Rol rol) {
         log.info("Petición recibida para listar usuarios con el rol: {}", rol);
@@ -139,6 +142,7 @@ public class UsuarioController {
 
     // DELETE: Borramos al Usuario por su ID.
     // http://localhost:8081/api/auth/usuario/{id}
+    @Operation(summary = "Eliminar Usuario por su Id")
     @DeleteMapping("/usuario/{id}")
     public ResponseEntity<Void> borrar(@PathVariable Long id) {
         log.info("Petición para eliminar usuario con ID: {}", id);
@@ -153,6 +157,7 @@ public class UsuarioController {
 
     // PUT: Actualizar Usuario
     // http://localhost:8081/api/auth/usuario/{id}
+    @Operation(summary = "Actualizar un _usuario por el ID")
     @PutMapping("/usuario/{id}")
     public ResponseEntity<UsuarioResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody UsuarioRegistroDTO dto) {
         log.info("Petición para actualizar usuario ID: {}", id);
@@ -164,6 +169,7 @@ public class UsuarioController {
 
     // GET: Filtrar por Username
     // http://localhost:8081/api/auth/usuario/buscar?username=
+    @Operation(summary = "Buscar Usuario por su username")
     @GetMapping("/usuario/buscar")
     public ResponseEntity<List<UsuarioResponseDTO>> buscarPorUsername(@RequestParam String username) {
         log.info("Buscando usuarios que coincidan con: {}", username);
@@ -180,6 +186,7 @@ public class UsuarioController {
 
     // GET: Endpoint para que otros microservicios se validen.
     // URL: http://localhost:8081/api/auth/validar?token=(Agregar Token)
+    @Operation(summary = "Validar el token del Usuario")
     @GetMapping("/validar")
     public ResponseEntity<?> validarToken(@RequestParam String token) {
 
