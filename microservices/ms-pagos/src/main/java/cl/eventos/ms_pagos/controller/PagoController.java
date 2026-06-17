@@ -3,6 +3,8 @@ package cl.eventos.ms_pagos.controller;
 import cl.eventos.ms_pagos.dto.PagoRequestDTO;
 import cl.eventos.ms_pagos.dto.PagoResponseDTO;
 import cl.eventos.ms_pagos.service.PagoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Tag(name = "Pagos", description = "Gestión de pasarelas y validación de pagos")
 @RestController
 @RequestMapping("/api/pagos")
 @RequiredArgsConstructor
@@ -22,13 +25,7 @@ public class PagoController {
 
     // POST: Crear el pago.
     // http://localhost:8086/api/pagos/crear
-    /*
-{
-    "ordenId": ,
-    "monto": ,
-    "metodoPago": ""
-}
-     */
+    @Operation(summary = "Crear nuevo pago", description = "Se crea un nuevo Pago y se guarda.")
     @PostMapping("/crear")
     public ResponseEntity<?> crear(@RequestBody PagoRequestDTO pagoRequestDTO, @RequestHeader("Authorization") String authHeader) {
 
@@ -46,6 +43,7 @@ public class PagoController {
 
     // GET: Listar los pagos.
     // http://localhost:8086/api/pagos/listar
+    @Operation(summary = "Listar todos los pagos", description = "Nos muestra la Lista de todos los Pagos Registrados.")
     @GetMapping("/listar")
     public ResponseEntity<List<PagoResponseDTO>> listar() {
         return ResponseEntity.ok(pagoService.findAll());
@@ -53,6 +51,7 @@ public class PagoController {
 
     // GET: Buscar por ID.
     // http://localhost:8086/api/pagos/{id}
+    @Operation(summary = "Buscar pago por ID", description = "Buscamos el Pago por su ID.")
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         Optional<PagoResponseDTO> response = pagoService.findByIdOptional(id);
@@ -66,6 +65,7 @@ public class PagoController {
 
     // PUT: Actualizar el pago.
     // http://localhost:8086/api/pagos/actualizar/{id}
+    @Operation(summary = "Actualizar datos de un pago", description = "Actualizamos los Datos del Pago guardado por el ID.")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody PagoRequestDTO pagoRequestDTO) {
         System.out.println("Actualizando datos del pago con ID: " + id);
@@ -81,7 +81,8 @@ public class PagoController {
     }
 
     // PUT: Actualizar solo el estado del pago (PENDIENTE, APROBADO, RECHAZADO)
-    // http://localhost:8086/api/pagos/actualizar-estado/1?nuevoEstado=
+    // http://localhost:8086/api/pagos/actualizar-estado/{ID}?nuevoEstado=
+    @Operation(summary = "Actualizar estado de pago", description = "Actualizamos el Estado del Pago manualmente de PENDIENTE a PAGADA O RECHAZADO.")
     @PatchMapping("/actualizar-estado/{id}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id, @RequestParam String nuevoEstado) {
         System.out.println("Cambiando estado del Pago ID: " + id + " a " + nuevoEstado);
@@ -101,6 +102,7 @@ public class PagoController {
 
     // DELETE: Eliminar el historial del Pago.
     // http://localhost:8086/api/pagos/eliminar/{id}
+    @Operation(summary = "Eliminar registro de pago", description = "Eliminamos un Pago por el ID.")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         System.out.println("Solicitud para eliminar pago con ID: " + id);
