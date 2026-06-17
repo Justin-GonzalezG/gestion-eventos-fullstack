@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: cl.eventos.ms_reportes.service.ReporteServiceTest
--------------------------------------------------------------------------------
-Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.07 s -- in cl.eventos.ms_reportes.service.ReporteServiceTest
