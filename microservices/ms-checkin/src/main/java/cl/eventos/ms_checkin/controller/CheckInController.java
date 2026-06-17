@@ -40,6 +40,7 @@ public class CheckInController {
 
     // GET: Listar todos los ingresos.
     // http://localhost:8090/api/checkin/listar
+    @Operation(summary = "Listar los Ticket Chequeados")
     @GetMapping("/listar")
     public ResponseEntity<List<CheckInResponseDTO>> listar() {
         System.out.println("Obteniendo lista completa de asistentes");
@@ -53,6 +54,7 @@ public class CheckInController {
 
     // GET: Buscar ingreso por Ticket ID.
     // http://localhost:8090/api/checkin/ticket/{ticketId}
+    @Operation(summary = "Busacr Check-in por la ID del Ticket")
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<CheckInResponseDTO> buscarPorTicket(@PathVariable Long ticketId) {
         System.out.println("Verificando estado de ingreso del ticket: " + ticketId);
@@ -64,6 +66,7 @@ public class CheckInController {
 
     // PUT: Actualizar un registro de ingreso por ID.
     // http://localhost:8090/api/checkin/actualizar/{id}
+    @Operation(summary = "Actualizar el Ingreso por el ID")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<CheckInResponseDTO> actualizar(
             @PathVariable Long id,
@@ -80,6 +83,7 @@ public class CheckInController {
 
     // DELETE: Eliminar un registro de ingreso.
     // http://localhost:8090/api/checkin/eliminar/{id}
+    @Operation(summary = "Eliminar un Chequeo por su ID")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         System.out.println("Eliminando registro de ingreso ID: " + id);
@@ -96,6 +100,7 @@ public class CheckInController {
 
     // GET: Obtener total de asistentes (Cuantos Ticket chequeados).
     // http://localhost:8090/api/checkin/aforo
+    @Operation(summary = "Obtener la lista de los Tickets Chequeados")
     @GetMapping("/aforo")
     public ResponseEntity<Long> obtenerAforo() {
         Long total = checkInService.obtenerTotalAsistentes();
