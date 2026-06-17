@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cl.eventos</groupId>
-	<artifactId>ms-ordenes</artifactId>
+	<artifactId>ms-pagos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
