@@ -1,4 +1,69 @@
+server:
+  port: ${PORT:8091} # Puerto dinámico para el contenedor/nube
+
 eureka:
   client:
     service-url:
+      # URL externa del servidor
       defaultZone: ${EUREKA_SERVER_URL:http://ms-eureka-server:8761/eureka/}
+
+spring:
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          # --- Microservicios del Sistema (Producción) ---
+          - id: ms-autenticacion
+            uri: ${MS_AUTH_URI:lb://ms-autenticacion}
+            predicates:
+              - Path=/api/auth/**
+
+          - id: ms-checkin
+            uri: ${MS_CHECKIN_URI:lb://ms-checkin}
+            predicates:
+              - Path=/api/checkin/**
+
+          - id: ms-eventos
+            uri: ${MS_EVENTOS_URI:lb://ms-eventos}
+            predicates:
+              - Path=/api/eventos/**
+
+          - id: ms-ordenes
+            uri: ${MS_ORDENES_URI:lb://ms-ordenes}
+            predicates:
+              - Path=/api/ordenes/**
+
+          - id: ms-pagos
+            uri: ${MS_PAGOS_URI:lb://ms-pagos}
+            predicates:
+              - Path=/api/pagos/**
+
+          - id: ms-recomendacion
+            uri: ${MS_RECOMENDACION_URI:lb://ms-recomendacion}
+            predicates:
+              - Path=/api/recomendaciones/**
+
+          - id: ms-reportes
+            uri: ${MS_REPORTES_URI:lb://ms-reportes}
+            predicates:
+              - Path=/api/reportes/**
+
+          - id: ms-soporte
+            uri: ${MS_SOPORTE_URI:lb://ms-soporte}
+            predicates:
+              - Path=/api/soporte/**
+
+          - id: ms-tickets
+            uri: ${MS_TICKETS_URI:lb://ms-tickets}
+            predicates:
+              - Path=/api/tickets/**
+
+          - id: ms-categorias
+            uri: ${MS_TICKETS_URI:lb://ms-tickets} # Comparte MS con tickets
+            predicates:
+              - Path=/api/categorias/**
+
+          - id: ms-usuarios
+            uri: ${MS_USUARIOS_URI:lb://ms-usuarios}
+            predicates:
+              - Path=/api/usuarios/**

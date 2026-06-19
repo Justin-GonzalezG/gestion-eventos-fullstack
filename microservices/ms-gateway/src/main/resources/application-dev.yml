@@ -1,4 +1,18 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+spring:
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: ms-checkin
+            uri: lb://ms-checkin
+            predicates:
+              - Path=/api/checkin/**
+            filters:
+              - RewritePath=/api/checkin/(?<segment>.*), /${segment}
+
+          - id: ms-autenticacion
+            uri: lb://ms-autenticacion
+            predicates:
+              - Path=/api/auth/**
+            filters:
+              - RewritePath=/api/auth/(?<segment>.*), /${segment}

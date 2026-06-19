@@ -1,0 +1,29 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: ms-checkin
+            uri: lb://ms-checkin
+            predicates:
+              - Path=/api/checkin/**
+            filters:
+              - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    urls:
+      - name: checkin
+        url: /api/checkin/v3/api-docs
