@@ -18,10 +18,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas necesarias para Swagger
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/registrar",
+                                "/api/auth/validar",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
